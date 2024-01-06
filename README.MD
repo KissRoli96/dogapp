@@ -1,1 +1,1 @@
-# DOG APP
+# Dog Cosmetics App
