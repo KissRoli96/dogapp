@@ -1,19 +1,22 @@
 {
-    "name": "dog cosmetics backend-app",
+    "name": "dog-cosmetics-backend-app",
     "version": "1.0.0",
     "description": "dog cosmetics alkalmazás backend oldali része",
     "main": "src/server.js",
     "scripts": {
-      "start": "node src/server.js",  
-      "dev": "nodemon src/server.js"  
+        "start": "node src/server.js",
+        "dev": "nodemon src/server.js"
     },
     "keywords": [],
     "author": "Kiss Roland Kristóf",
     "license": "MIT",
     "dependencies": {
-      "express": "^4.17.1"
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.17.1",
+        "mongoose": "^7.6.7"
     },
     "devDependencies": {
-      "nodemon": "^2.0.15"
+        "nodemon": "^2.0.15"
     }
-  }
+}
