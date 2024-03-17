@@ -27,12 +27,34 @@ exports.getUserById = async (req, res) => {
 
 // Create a new user
 exports.createUser = async (req, res) => {
-    try {
-        const newUser = new User(req.body);
-        await newUser.save();
-        res.status(201).json(newUser);
-    } catch (error) {
-        console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Server error, An error occurred while creating user' });
-    }
+  try {
+    const newUser = new User(req.body);
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Server error, An error occurred while creating user' });
+  }
 }
+
+// Update a user
+exports.updateUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while updating the user' });
+  }
+};
+
+// Delete a user 
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while deleting the user' });
+  }
+};
