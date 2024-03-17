@@ -1,5 +1,5 @@
 # Használjuk a hivatalos Node.js alap imázst
-FROM node:14
+FROM node:latest
 
 # Állítsuk be a munkakönyvtárat a konténerben
 WORKDIR /usr/src/app
