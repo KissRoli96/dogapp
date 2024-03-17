@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const userController = require('../controllers/userController');
 
 // Példa GET kérés kezelése
 router.get('/example', (req, res) => {
@@ -8,54 +9,15 @@ router.get('/example', (req, res) => {
   });
 
 // Példa: Minden felhasználó lekérése
-router.get('/users', async (req, res) => {
-  try {
-    const users = await User.find(); // Mongoose find metódus
-    res.json(users);
-  } catch (error) {
-    console.error('Hiba a felhasználók lekérésekor:', error);
-    res.status(500).json({ error: 'Szerverhiba' });
-  }
-});
+router.get('/users', userController.getAllUsers);
 
 // Új felhasználó létrehozása
-router.post('/users', async (req, res) => {
-  try {
-      const newUser = new User(req.body);
-      await newUser.save();
-      res.status(201).json(newUser);
-  } catch (error) {
-      console.error('Hiba az új felhasználó létrehozásakor:', error);
-      res.status(500).json({ error: 'Szerverhiba' });
-  }
-});
+router.post('/users', userController.createUser);
 
 // Felhasználó frissítése
-router.put('/users/:id', async (req, res) => {
-  try {
-      const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedUser) {
-          return res.status(404).json({ error: 'Felhasználó nem található' });
-      }
-      res.json(updatedUser);
-  } catch (error) {
-      console.error('Hiba a felhasználó frissítésekor:', error);
-      res.status(500).json({ error: 'Szerverhiba' });
-  }
-});
+router.put('/users/:id', userController.updateUser);
 
 // Felhasználó törlése
-router.delete('/users/:id', async (req, res) => {
-  try {
-      const deletedUser = await User.findByIdAndDelete(req.params.id);
-      if (!deletedUser) {
-          return res.status(404).json({ error: 'Felhasználó nem található' });
-      }
-      res.json({ message: 'Felhasználó sikeresen törölve' });
-  } catch (error) {
-      console.error('Hiba a felhasználó törlésekor:', error);
-      res.status(500).json({ error: 'Szerverhiba' });
-  }
-});
-  
+router.delete('/users/:id', userController.deleteUser);
+
 module.exports = router;
