@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
+import HomePage from '../HomePage/HomePage';
 
 function App() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   console.log('data', data);
   useEffect(() => {
-    axios.get('http://localhost:3000/api/users')
+    axios.get(process.env.REACT_APP_BASE_URL + '/data')
       .then(response => {
         setData(response.data);
       })
@@ -21,11 +21,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <p>THIS IS TEST ASD!</p>
+        <HomePage />
         {error && <p>Error: {error}</p>}
         {data && (
           <div>
@@ -33,14 +29,6 @@ function App() {
             {/* Render your data here */}
           </div>
         )}
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
