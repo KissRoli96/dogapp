@@ -8,7 +8,7 @@ function App() {
   const [error, setError] = useState(null);
   console.log('data', data);
   useEffect(() => {
-    axios.get(process.env.REACT_APP_BASE_URL + '/data')
+    axios.get(process.env.REACT_APP_BASE_URL + '/users')
       .then(response => {
         setData(response.data);
       })
@@ -26,6 +26,7 @@ function App() {
         {data && (
           <div>
             <h2>Data:</h2>
+            <p></p>
             {/* Render your data here */}
           </div>
         )}
