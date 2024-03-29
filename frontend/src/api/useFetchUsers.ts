@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getUsers } from './UserApi';
+import { getUsers } from './userApi';
 
 const useFetchUsers = () => {
   const [data, setData] = useState(null);
