@@ -4,6 +4,10 @@ import './App.css';
 import HomePage from '../HomePage/HomePage';
 import NavigationMenu from '../Navbar/Navbar';
 import { Helmet } from 'react-helmet';
+import Dashboard from '../Dashboard/Dashboard';
+import { BrowserRouter as Router, Route,  Routes } from 'react-router-dom';
+import DogcosmeticsTraining from '../DogcosmeticsTraining/DogcosmeticsTraining';
+import Customers from '../Customers/Customers';
 
 
 function App() {
@@ -16,10 +20,15 @@ function App() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"        />
       </Helmet>
-      <NavigationMenu />
-      <header className="App-header">
-        <HomePage />
-      </header>
+      <Router>
+        <NavigationMenu />
+        <Routes>
+          <Route path="/dogcosmetics-training" element={<DogcosmeticsTraining />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
