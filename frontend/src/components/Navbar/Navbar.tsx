@@ -11,12 +11,12 @@ function NavigationMenu() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Adminsztrációs felület</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+            <Nav.Link href="#home">Kutyakozmetika Képzés</Nav.Link>
+            <Nav.Link href="#link">Profil</Nav.Link>
+            <NavDropdown title="Admin Panel" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">Felhasználói fiókok</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
-                Another action
+                Képzések elbírálása
               </NavDropdown.Item>
               <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
               <NavDropdown.Divider />
