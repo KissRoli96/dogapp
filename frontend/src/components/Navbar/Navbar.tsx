@@ -15,6 +15,7 @@ function NavigationMenu() {
             <Nav.Link as={Link} to="/dogcosmetics-training">Dog Grooming Courses</Nav.Link>
             <Nav.Link as={Link} to="/profil">Profil</Nav.Link>
             <Nav.Link as={Link} to="/dashboard">Admin Dashboard</Nav.Link>
+            {/* <Nav.Link as={Link} to="/customers">Customers</Nav.Link> Add this line */}
           </Nav>
         </Navbar.Collapse>
       </Container>
