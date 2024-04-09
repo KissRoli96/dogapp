@@ -8,6 +8,7 @@ import Dashboard from '../Dashboard/Dashboard';
 import { BrowserRouter as Router, Route,  Routes } from 'react-router-dom';
 import DogcosmeticsTraining from '../DogcosmeticsTraining/DogcosmeticsTraining';
 import Customers from '../Customers/Customers';
+import ResponsiveAppBar from '../ResponsiveAppBar/ResponsiveAppBar';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"        />
       </Helmet>
       <Router>
+        <ResponsiveAppBar />
         <NavigationMenu />
         <Routes>
           <Route path="/dogcosmetics-training" element={<DogcosmeticsTraining />} />
