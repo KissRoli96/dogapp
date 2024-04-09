@@ -9,6 +9,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import { Link } from 'react-router-dom';
 
 export const mainListItems = (
   <React.Fragment>
@@ -24,7 +25,7 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Orders" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton component={Link} to="/customers">
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
