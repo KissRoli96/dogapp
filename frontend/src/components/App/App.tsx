@@ -23,7 +23,6 @@ function App() {
       </Helmet>
       <Router>
         <ResponsiveAppBar />
-        <NavigationMenu />
         <Routes>
           <Route path="/dogcosmetics-training" element={<DogcosmeticsTraining />} />
           <Route path="/dashboard" element={<Dashboard />} />
