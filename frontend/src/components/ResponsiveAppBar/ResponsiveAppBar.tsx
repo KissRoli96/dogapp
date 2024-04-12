@@ -13,6 +13,9 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
+import logo from '../../assets/dog-logo.jpg';
+import './ResponsiveAppBar.css';
+
 
 const pages = [
   {name:'Products', path: '/...'},
@@ -52,7 +55,12 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+          <img className="logo" src={logo} alt="Logo" />
+        </Box>
+        <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
+          <img className="logo" src={logo} alt="Logo" />
+        </Box>
           <Typography 
             variant="h6"
             noWrap
