@@ -9,9 +9,11 @@ import { BrowserRouter as Router, Route,  Routes } from 'react-router-dom';
 import DogcosmeticsTraining from '../DogcosmeticsTraining/DogcosmeticsTraining';
 import Customers from '../Customers/Customers';
 import ResponsiveAppBar from '../ResponsiveAppBar/ResponsiveAppBar';
+import Profil from '../Profil/Profil';
 
 
 function App() {
+
   return (
     <div className="App">
       <Helmet>
@@ -28,6 +30,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/" element={<HomePage />} />
+          <Route path="/user/:id" element={<Profil />} />
         </Routes>
       </Router>
     </div>

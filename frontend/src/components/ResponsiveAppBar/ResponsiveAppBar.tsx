@@ -21,7 +21,7 @@ const pages = [
   {name:'Products', path: '/...'},
   {name:'Pricing', path: '/price'},
   {name:'Blog', path: '/blog'},
-  {name:'Customers', path: '/customers'},
+  // {name:'Customers', path: '/customers'},
   {name: 'Dog Grooming Courses', path: '/dogcosmetics-training'},
 
 ];

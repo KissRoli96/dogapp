@@ -11,7 +11,7 @@ export const getUsers = async () => {
   
   export const getUser = async (id: string) => {
     try {
-      const response = await api.get(`/users/${id}`);
+      const response = await api.get(`/user/${id}`);
       return response.data;
     } catch (error) {
       throw error;
