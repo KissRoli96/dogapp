@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Typography, Grid, Paper, makeStyles, Button } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import { getUser } from '../../api/userApi';
+import useFetchUserById from '../../api/useFetchUserById';
 
 interface Address {
   city: string;
@@ -43,30 +43,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Profile: React.FC = () => {
-    const classes = useStyles();
-    const [user, setUser] = React.useState<User | null>(null);
-    const { id } = useParams<{ id: string }>();
-    console.log(id);
+  const classes = useStyles();
+  const { id } = useParams<{ id: string }>();
+  const { data: user, error } = useFetchUserById(id);
   
-    React.useEffect(() => {
-      const fetchUser = async () => { 
-        if(!id) {
-            return;
-        }
-        const user = await getUser(id);
-        console.log(user);
-        setUser(user);
-      };
-  
-      fetchUser();
-    }, [id]);
-  
-    if (!user) {
-      return null; // or a loading spinner
-    }
- 
+  if (!id) {
+    return <div>Invalid user ID</div>;
+  }
+
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!user) {
+    return <div>Loading...</div>; // or a loading spinner
+  }
+
   const { username, email, profile } = user;
-const { firstName, lastName, age, address } = profile;
+  const { firstName, lastName, age, address } = profile;
 
   const handleEdit = () => {
     // Handle edit action
@@ -75,7 +70,6 @@ const { firstName, lastName, age, address } = profile;
   const handleDelete = () => {
     // Handle delete action
   };
-
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={2}>

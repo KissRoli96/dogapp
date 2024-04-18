@@ -11,10 +11,10 @@ router.get('/example', (req, res) => {
 // Példa: Minden felhasználó lekérése
 router.get('/users', userController.getAllUsers);
 
-router.get('/users/:id', userController.getUserById);
+router.get('/user/:id', userController.getUserById);
 
 // Új felhasználó létrehozása
-router.post('/users', userController.createUser);
+router.post('/user/:id', userController.createUser);
 
 // Felhasználó frissítése
 router.put('/users/:id', userController.updateUser);
