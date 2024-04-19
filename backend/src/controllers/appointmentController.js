@@ -40,7 +40,7 @@ const createAppointment = async (req, res) => {
   // Get a specific appointment
   const getAppointment = async (req, res) => {
     try {
-      const appointment = await Appointment.findById(req.params.id);
+      const appointment = await Appointment.findById(req.params.id).populate('user');
       if (appointment == null) {
         return res.status(404).json({ message: 'Cannot find appointment' });
       }
