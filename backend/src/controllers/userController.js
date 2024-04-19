@@ -1,5 +1,25 @@
 const User = require('../models/user');
 
+const Joi = require('joi');
+
+const userValidationSchema = Joi.object({
+  username: Joi.string().alphanum().min(3).max(30).required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+  createdAt: Joi.date(),
+  updatedAt: Joi.date(),
+  roles: Joi.array().items(Joi.string().valid('user', 'admin')),
+  profile: Joi.object({
+    firstName: Joi.string().alphanum().min(3).max(30),
+    lastName: Joi.string().alphanum().min(3).max(30),
+    age: Joi.number().integer().min(0),
+    address: Joi.object({
+      city: Joi.string().max(100),
+      country: Joi.string().max(100)
+    })
+  })
+});
+
 // Get all users
 exports.getAllUsers = async (req, res) => {
   try {
@@ -27,6 +47,11 @@ exports.getUserById = async (req, res) => {
 
 // Create a new user
 exports.createUser = async (req, res) => {
+  const { error } = userValidationSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+
   try {
     const newUser = new User(req.body);
     await newUser.save();
@@ -39,6 +64,11 @@ exports.createUser = async (req, res) => {
 
 // Update a user
 exports.updateUser = async (req, res) => {
+  const { error } = userValidationSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!user) return res.status(404).json({ error: 'User not found' });
