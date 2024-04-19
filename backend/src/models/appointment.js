@@ -3,11 +3,6 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const appointmentSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
   date: {
     type: Date,
     required: true
@@ -25,7 +20,16 @@ const appointmentSchema = new mongoose.Schema({
     enum: ['pending', 'confirmed', 'cancelled'],
     default: 'pending'
   },
-  notes: String
+  notes: String,
+  serviceType: {
+    type: String,
+    required: true
+  },
+  dog: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Dog',
+    required: true
+  },
 });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);

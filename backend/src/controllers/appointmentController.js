@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Appointment = require('../models/Appointment');
 const Joi = require('joi');
+const Dog = require('../models/dog');
 
 const appointmentValidationSchema = Joi.object({
   user: Joi.string().required(),
@@ -8,7 +9,9 @@ const appointmentValidationSchema = Joi.object({
   time: Joi.string().required(),
   duration: Joi.number().required(),
   status: Joi.string().valid('pending', 'confirmed', 'cancelled').default('pending'),
-  notes: Joi.string().allow('')
+  notes: Joi.string().allow(''),
+  serviceType: Joi.string().required(),
+  dog: Joi.string().required() 
 });
 
 // Create an appointment
@@ -18,7 +21,7 @@ const createAppointment = async (req, res) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  const { user, date, time, duration, notes } = req.body;
+  const { user, date, time, duration, notes, serviceType, dog } = req.body;
 
   try {
     const newAppointment = new Appointment({
@@ -26,7 +29,9 @@ const createAppointment = async (req, res) => {
       date,
       time,
       duration,
-      notes
+      notes,
+      serviceType,
+      dog
     });
 
     const savedAppointment = await newAppointment.save();
@@ -38,17 +43,25 @@ const createAppointment = async (req, res) => {
 };
   
   // Get a specific appointment
-  const getAppointment = async (req, res) => {
-    try {
-      const appointment = await Appointment.findById(req.params.id).populate('user');
-      if (appointment == null) {
-        return res.status(404).json({ message: 'Cannot find appointment' });
-      }
-      res.json(appointment);
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
+const getAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id)
+      .populate('user')
+      .populate('dog'); // Populate the dog field
+    if (appointment == null) {
+      return res.status(404).json({ message: 'Cannot find appointment' });
     }
-  };
+    res.json({
+      ...appointment._doc, // Spread the appointment document
+      userName: appointment.user.name, // Add the user's name
+      dogType: appointment.dog.type, // Add the dog type
+      dogName: appointment.dog.name, // Add the dog name
+      serviceType: appointment.serviceType, // Add the service type
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
   
 // Update an appointment
 const updateAppointment = async (req, res) => {
