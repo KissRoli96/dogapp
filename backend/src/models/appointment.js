@@ -31,6 +31,10 @@ const appointmentSchema = new mongoose.Schema({
     ref: 'Dog',
     required: true
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
 });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);

@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const Appointment = require('../models/Appointment');
+const Appointment = require('../models/appointment');
 const Joi = require('joi');
 const Dog = require('../models/dog');
 Joi.objectId = require('joi-objectid')(Joi);
@@ -42,9 +42,20 @@ const createAppointment = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-  
+
+const getAllAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find()
+      .populate('user')
+      .populate('dog');
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
   // Get a specific appointment
-const getAppointment = async (req, res) => {
+const getAppointmentById = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id)
       .populate('user')
@@ -54,10 +65,10 @@ const getAppointment = async (req, res) => {
     }
     res.json({
       ...appointment._doc, // Spread the appointment document
-      userName: appointment.user.name, // Add the user's name
-      dogType: appointment.dog.type, // Add the dog type
-      dogName: appointment.dog.name, // Add the dog name
-      serviceType: appointment.serviceType, // Add the service type
+      userName: appointment.user ? appointment.user.name : '',
+      dogType: appointment.dog ? appointment.dog.type : '',
+      dogName: appointment.dog ? appointment.dog.name : '',
+      serviceType: appointment.serviceType,
     });
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -91,7 +102,8 @@ const updateAppointment = async (req, res) => {
   
   module.exports = {
     createAppointment,
-    getAppointment,
+    getAllAppointments,
+    getAppointmentById,
     updateAppointment,
     deleteAppointment
   };
