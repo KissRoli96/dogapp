@@ -5,6 +5,7 @@ const appointmentController = require('../controllers/appointmentController');
 const serviceController = require('../controllers/serviceController');
 const dogController = require('../controllers/dogController');
 const reviewController = require('../controllers/reviewController');
+const applicationController = require('../controllers/applicationController');
 
 // Példa GET kérés kezelése
 router.get('/example', (req, res) => {
@@ -45,5 +46,12 @@ router.get('/review/:id', reviewController.getReviewById);
 router.post('/review', reviewController.createReview);
 router.put('/review/:id', reviewController.updateReview);
 router.delete('/review/:id', reviewController.deleteReview);
+
+// Application routes
+router.post('/application', applicationController.createApplication);
+router.get('/applications', applicationController.getApplications);
+router.get('/application/:id', applicationController.getApplicationById);
+router.put('/application/:id', applicationController.updateApplication);
+router.delete('/application/:id', applicationController.deleteApplication);
 
 module.exports = router;
