@@ -5,6 +5,7 @@ const User = require('../models/user');
 const Appointment = require('../models/appointment'); // Import the Appointment model
 const Dog = require('../models/dog'); // Import the Dog model
 const Service = require('../models/service'); // Import the Service model
+const Review = require('../models/review');
 
 mongoose.connect(process.env.MONGO_URI);
 
@@ -27,6 +28,7 @@ const users = Array.from({ length: 15 }).map(() => {
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       age: faker.datatype.number({ min: 18, max: 60 }),
+      phoneNumber: faker.phone.phoneNumber(),
       address: {
         city: faker.address.city(),
         country: faker.address.country(),
@@ -68,31 +70,44 @@ Promise.all([...users, ...services])
     
       return dog.save();
     });
-    return Promise.all(dogs).then(dogs => ({dogs, services}));
+    return Promise.all(dogs).then(dogs => ({dogs, services, users}));
   })
-  .then(({dogs, services}) => {
+  .then(({dogs, services, users}) => {
     console.log("All dogs inserted");
 
     // Create appointments for each user
-    const appointments = dogs.map((dog, index) => {
-      const appointment = new Appointment({
-        user: dog.owner,
-        dog: dog._id, // Assign a dog to the appointment
-        date: faker.date.future(),
-        time: faker.datatype.number({ min: 8, max: 18 }).toString() + ":00",
-        duration: faker.datatype.number({ min: 30, max: 120 }),
-        status: faker.random.arrayElement(['pending', 'confirmed', 'cancelled']),
-        notes: faker.lorem.sentence(),
-        serviceType: services[index % services.length].name, // Assign a service to the appointment
+const appointments = dogs.map((dog, index) => {
+  const appointment = new Appointment({
+    user: dog.owner,
+    dog: dog._id, // Assign a dog to the appointment
+    date: faker.date.future(),
+    time: faker.datatype.number({ min: 8, max: 18 }).toString() + ":00",
+    duration: faker.datatype.number({ min: 30, max: 120 }),
+    status: faker.random.arrayElement(['pending', 'confirmed', 'cancelled']),
+    notes: faker.lorem.sentence(),
+    service: services[index % services.length]._id, // Assign a service to the appointment
+  });
+
+  return appointment.save();
+});
+
+    // Create some reviews for each service
+    const reviews = services.map((service, index) => {
+      const review = new Review({
+        user: users[index % users.length]._id,
+        service: service._id,
+        content: faker.lorem.paragraph(),
+        date: faker.date.past(),
+        rating: faker.datatype.number({ min: 1, max: 5 }),
       });
-    
-      return appointment.save();
+
+      return review.save();
     });
   
-    return Promise.all(appointments);
+    return Promise.all([...appointments, ...reviews]);
   })
   .then(() => {
-    console.log("All appointments inserted");
+    console.log("All appointments and reviews inserted");
     mongoose.connection.close();
   })
   .catch(err => {
