@@ -2,16 +2,17 @@ const User = require('../models/user');
 const Appointment = require('../models/Appointment');
 const Joi = require('joi');
 const Dog = require('../models/dog');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const appointmentValidationSchema = Joi.object({
-  user: Joi.string().required(),
+  user: Joi.objectId().required(),
   date: Joi.date().required(),
   time: Joi.string().required(),
   duration: Joi.number().required(),
   status: Joi.string().valid('pending', 'confirmed', 'cancelled').default('pending'),
   notes: Joi.string().allow(''),
-  serviceType: Joi.string().required(),
-  dog: Joi.string().required() 
+  service: Joi.objectId().required(),
+  dog: Joi.objectId().required() 
 });
 
 // Create an appointment

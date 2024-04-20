@@ -21,8 +21,9 @@ const appointmentSchema = new mongoose.Schema({
     default: 'pending'
   },
   notes: String,
-  serviceType: {
-    type: String,
+  service: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Service',
     required: true
   },
   dog: {
