@@ -13,6 +13,7 @@ const userValidationSchema = Joi.object({
     firstName: Joi.string().alphanum().min(3).max(30),
     lastName: Joi.string().alphanum().min(3).max(30),
     age: Joi.number().integer().min(0),
+    phoneNumber: Joi.string().pattern(/^[0-9]+$/),
     address: Joi.object({
       city: Joi.string().max(100),
       country: Joi.string().max(100)
