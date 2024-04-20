@@ -6,6 +6,7 @@ const Appointment = require('../models/appointment'); // Import the Appointment 
 const Dog = require('../models/dog'); // Import the Dog model
 const Service = require('../models/service'); // Import the Service model
 const Review = require('../models/review');
+const Application = require('../models/application'); 
 
 mongoose.connect(process.env.MONGO_URI);
 
@@ -51,11 +52,28 @@ const services = Array.from({ length: 5 }).map(() => {
   return service.save();
 });
 
-Promise.all([...users, ...services])
+// Create some applications
+const applications = Array.from({ length: 10 }).map(() => {
+  const application = new Application({
+    lastName: faker.name.lastName(),
+    firstName: faker.name.firstName(),
+    dateOfBirth: faker.date.past(30, '2000-01-01'),
+    placeOfBirth: faker.address.city(),
+    motivation: faker.lorem.paragraph(),
+    cv: faker.internet.url(), // This will be a link to the stored PDF file
+    email: faker.internet.email(),
+    phoneNumber: faker.phone.phoneNumber(),
+  });
+
+  return application.save();
+});
+
+Promise.all([...users, ...services, ...applications])
   .then((results) => {
     const users = results.slice(0, 15);
     const services = results.slice(15);
-    console.log("All users and services inserted");
+    const applications = results.slice(20);
+    console.log("All users, services, and applications inserted");
 
     // Create some dogs
     const dogs = users.map((user) => {
@@ -70,7 +88,7 @@ Promise.all([...users, ...services])
     
       return dog.save();
     });
-    return Promise.all(dogs).then(dogs => ({dogs, services, users}));
+    return Promise.all(dogs).then(dogs => ({dogs, services, users, applications}));
   })
   .then(({dogs, services, users}) => {
     console.log("All dogs inserted");
