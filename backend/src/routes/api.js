@@ -1,25 +1,41 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
 const userController = require('../controllers/userController');
+const appointmentController = require('../controllers/appointmentController');
+const serviceController = require('../controllers/serviceController');
+const dogController = require('../controllers/dogController');
 
 // Példa GET kérés kezelése
 router.get('/example', (req, res) => {
     res.json({ message: 'Ez egy példa válasz a GET kérésre.' });
   });
 
-// Példa: Minden felhasználó lekérése
+//Időpontfoglalással kapcsolatos Útvonalak
+router.get('/appointments', appointmentController.getAllAppointments);
+router.get('/appointment/:id', appointmentController.getAppointmentById);
+router.post('/appointment', appointmentController.createAppointment);
+router.put('/appointment/:id', appointmentController.updateAppointment);
+router.delete('/appointment/:id', appointmentController.deleteAppointment);
+
+//Felhaszálóval kapcsolatos Útvonalak
 router.get('/users', userController.getAllUsers);
-
 router.get('/user/:id', userController.getUserById);
+router.post('/user/', userController.createUser);
+router.put('/user/:id', userController.updateUser);
+router.delete('/user/:id', userController.deleteUser);
 
-// Új felhasználó létrehozása
-router.post('/user/:id', userController.createUser);
+// Service routes
+router.get('/services', serviceController.getAllServices);
+router.get('/service/:id', serviceController.getServiceById);
+router.post('/service', serviceController.createService);
+router.put('/service/:id', serviceController.updateService);
+router.delete('/service/:id', serviceController.deleteService);
 
-// Felhasználó frissítése
-router.put('/users/:id', userController.updateUser);
-
-// Felhasználó törlése
-router.delete('/users/:id', userController.deleteUser);
+// Dog routes
+router.get('/dogs', dogController.getAllDogs);
+router.get('/dog/:id', dogController.getDogById);
+router.post('/dog', dogController.createDog);
+router.put('/dog/:id', dogController.updateDog);
+router.delete('/dog/:id', dogController.deleteDog);
 
 module.exports = router;
