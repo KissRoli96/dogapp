@@ -1,21 +1,23 @@
 export interface User {
-    username: string;
-    email: string;
-    password: string;
-    createdAt: Date;
-    updatedAt: Date;
-    roles: string[];
-    profile: {
-      firstName: string;
-      lastName: string;
-      age: number;
-      phoneNumber: string;
-      address: {
-        city: string;
-        country: string;
-      };
+  _id: { $oid: string };
+  username: string;
+  email: string;
+  password: string;
+  createdAt: { $date: string };
+  updatedAt: { $date: string };
+  roles: string[];
+  profile: {
+    firstName: string;
+    lastName: string;
+    age: number;
+    phoneNumber: string;
+    address: {
+      city: string;
+      country: string;
     };
-  }
+  };
+  __v: number;
+}
   
   export interface Review {
     user: string; // ObjectId
