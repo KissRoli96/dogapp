@@ -56,3 +56,14 @@ export interface User {
     email: string;
     phoneNumber: string;
   }
+
+  export interface Service {
+    _id: {
+      $oid: string;
+    };
+    name: string;
+    description: string;
+    price: number;
+    __v: number;
+    // Add any other fields you might have
+  }

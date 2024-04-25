@@ -10,6 +10,7 @@ import DogcosmeticsTraining from '../DogcosmeticsTraining/DogcosmeticsTraining';
 import Customers from '../Customers/Customers';
 import ResponsiveAppBar from '../ResponsiveAppBar/ResponsiveAppBar';
 import Profil from '../Profil/Profil';
+import Services from '../Services/Services';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/dogcosmetics-training" element={<DogcosmeticsTraining />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/user/:id" element={<Profil />} />
         </Routes>

@@ -18,7 +18,7 @@ import './ResponsiveAppBar.css';
 
 
 const pages = [
-  {name:'Products', path: '/...'},
+  {name:'Services', path: '/services'},
   {name:'Pricing', path: '/price'},
   {name:'Blog', path: '/blog'},
   // {name:'Customers', path: '/customers'},
