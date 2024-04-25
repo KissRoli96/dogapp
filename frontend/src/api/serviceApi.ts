@@ -12,7 +12,7 @@ export const getServices = async (): Promise<Service[]> => {
 
 export const getService = async (id: string): Promise<Service> => {
   try {
-    const response = await api.get<Service>(`/services/${id}`);
+    const response = await api.get<Service>(`/service/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -21,7 +21,7 @@ export const getService = async (id: string): Promise<Service> => {
 
 export const createService = async (serviceData: Partial<Service>): Promise<Service> => {
   try {
-    const response = await api.post<Service>('/services', serviceData);
+    const response = await api.post<Service>('/service', serviceData);
     return response.data;
   } catch (error) {
     throw error;
@@ -30,7 +30,7 @@ export const createService = async (serviceData: Partial<Service>): Promise<Serv
 
 export const updateService = async (id: string, serviceData: Partial<Service>): Promise<Service> => {
   try {
-    const response = await api.put<Service>(`/services/${id}`, serviceData);
+    const response = await api.put<Service>(`/service/${id}`, serviceData);
     return response.data;
   } catch (error) {
     throw error;
@@ -39,7 +39,7 @@ export const updateService = async (id: string, serviceData: Partial<Service>): 
 
 export const deleteService = async (id: string): Promise<void> => {
   try {
-    await api.delete(`/services/${id}`);
+    await api.delete(`/service/${id}`);
   } catch (error) {
     throw error;
   }

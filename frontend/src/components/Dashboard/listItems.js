@@ -9,6 +9,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import SettingsIcon from '@mui/icons-material/Settings';
+import RateReviewIcon from '@mui/icons-material/RateReview';
 import { Link } from 'react-router-dom';
 
 export const mainListItems = (
@@ -43,7 +45,19 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Integrations" />
     </ListItemButton>
-  </React.Fragment>
+    <ListItemButton component={Link} to="/servicestocustomers" >
+      <ListItemIcon>
+      <SettingsIcon />
+      </ListItemIcon>
+      <ListItemText primary="Services" />
+    </ListItemButton>
+      <ListItemButton>
+        <ListItemIcon>
+          <RateReviewIcon />
+        </ListItemIcon>
+        <ListItemText primary="Reviews" />
+      </ListItemButton>
+    </React.Fragment>
 );
 
 export const secondaryListItems = (
