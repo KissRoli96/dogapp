@@ -1,0 +1,20 @@
+.ServicesToCustomers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(80vh - 60px);
+    padding: 20px;
+    margin-top: 60px;
+  }
+  
+  .ServicesToCustomers .datagrid-container {
+    height: 400px;
+    width: 100%;
+  }
+  
+  @media (min-width: 768px) {
+    .ServicesToCustomers .datagrid-container {
+      width: 75%;
+    }
+  }

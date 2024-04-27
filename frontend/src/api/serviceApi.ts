@@ -37,10 +37,12 @@ export const updateService = async (id: string, serviceData: Partial<Service>): 
   }
 };
 
-export const deleteService = async (id: string): Promise<void> => {
+export const deleteService = async (id: string): Promise<boolean> => {
   try {
     await api.delete(`/service/${id}`);
+    return true;
   } catch (error) {
     throw error;
+    return false;
   }
 };

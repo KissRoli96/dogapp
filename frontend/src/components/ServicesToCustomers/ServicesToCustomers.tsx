@@ -8,24 +8,37 @@ import AddIcon from '@mui/icons-material/Add';
 import { getServices, updateService, deleteService, createService } from '../../api/serviceApi';
 import './ServicesToCustomers.css';
 import { Service } from '../../types/types';
+import { Snackbar } from '@mui/material';
 
 function ServicesToCustomers() {
   const [services, setServices] = React.useState<Service[]>([]);
   const [open, setOpen] = React.useState(false);
   const [newService, setNewService] = React.useState({ name: '', description: '', price: '' });
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
+const [serviceToDelete, setServiceToDelete] = React.useState<string | null>(null);
+
+  const fetchServices = async () => {
+    const data = await getServices();
+    setServices(data);
+  };
 
   React.useEffect(() => {
-    const fetchServices = async () => {
-      const data = await getServices();
-      setServices(data);
-    };
-
     fetchServices();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    await deleteService(id);
-    setServices(services.filter((service) => service._id.$oid !== id));
+  const handleDelete = async () => {
+    if (serviceToDelete) {
+      const deletedService = await deleteService(serviceToDelete);
+      if (deletedService) {
+        await fetchServices();
+        setSnackbarMessage('Service deleted successfully');
+        setSnackbarOpen(true);
+      }
+    }
+    setServiceToDelete(null);
+    setDeleteConfirmOpen(false);
   };
 
   const handleUpdate = (service: Service) => {
@@ -48,15 +61,20 @@ function ServicesToCustomers() {
     }));
   };
 
-const handleSubmit = async () => {
+  const handleSubmit = async () => {
     const service = await createService({
         name: newService.name,
         description: newService.description,
         price: parseFloat(newService.price),
     });
-    setServices([...services, service]);
+    await fetchServices();
     handleClose();
-};
+  };
+
+  const handleConfirmDelete = (id: string) => {
+    setServiceToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -70,12 +88,20 @@ const handleSubmit = async () => {
       width: 150,
       renderCell: (params) => {
         const onClickDelete = () => {
-          handleDelete(params.row.id as string);
-        };
+            if (params.row.id) {
+              handleConfirmDelete(params.row.id as string);
+            } else {
+              console.error('Cannot delete service: id is undefined');
+            }
+          };
 
         const onClickUpdate = () => {
-          handleUpdate(params.row as Service);
-        };
+            if (params.row.id) {
+              handleUpdate(params.row as Service);
+            } else {
+              console.error('Cannot update service: _id is undefined');
+            }
+          };
 
         return (
           <>
@@ -91,8 +117,8 @@ const handleSubmit = async () => {
     },
   ];
 
-  const rows = services.map((service, index) => ({
-    id: service._id?.$oid || index,
+  const rows = services.map((service) => ({
+    id: service._id,
     name: service.name,
     description: service.description,
     price: service.price,
@@ -100,21 +126,34 @@ const handleSubmit = async () => {
   }));
 
   return (
-    <div className="ServicesToCustomers" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 'calc(80vh - 60px)' }}>
-      <Button component={RouterLink} to="/dashboard" variant="contained" color="primary" style={{ marginTop: '40px' }}>
+    <div className="ServicesToCustomers">
+      <Button component={RouterLink} to="/dashboard" variant="contained" color="primary" style={{ marginBottom: '20px' }}>
         Back to Dashboard
       </Button>
-      <h1>Services to Customers</h1>
-      <div style={{ height: 400, width: '75%' }}>
+      <h1 style={{ marginBottom: '20px' }}>Services to Customers</h1>
+      <div className="datagrid-container">
         <DataGrid
           rows={rows}
           columns={columns}
-          checkboxSelection
+          getRowId={(row) => row.id}
         />
       </div>
-      <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleClickOpen} style={{ marginTop: '40px' }}>
+      <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleClickOpen} style={{ marginTop: '20px' }}>
         Create Service
       </Button>
+      <Dialog
+  open={deleteConfirmOpen}
+  onClose={() => setDeleteConfirmOpen(false)}
+>
+  <DialogTitle>Confirm Delete</DialogTitle>
+  <DialogContent>
+    Are you sure you want to delete this service?
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setDeleteConfirmOpen(false)}>No</Button>
+    <Button onClick={handleDelete}>Yes</Button>
+  </DialogActions>
+</Dialog>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create New Service</DialogTitle>
         <DialogContent>
@@ -127,6 +166,12 @@ const handleSubmit = async () => {
           <Button onClick={handleSubmit}>Submit</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={6000}
+      onClose={() => setSnackbarOpen(false)}
+      message={snackbarMessage}
+    />
     </div>
   );
 }
