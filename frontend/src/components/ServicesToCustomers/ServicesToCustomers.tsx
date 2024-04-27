@@ -63,13 +63,17 @@ function ServicesToCustomers() {
 
     const handleSubmit = async () => {
         const service = await createService({
-            name: newService.name,
-            description: newService.description,
-            price: parseFloat(newService.price),
+          name: newService.name,
+          description: newService.description,
+          price: parseFloat(newService.price),
         });
+        if (service) {
+          setSnackbarMessage('Service created successfully');
+          setSnackbarOpen(true);
+        }
         await fetchServices();
         handleClose();
-    };
+      };
 
     const handleConfirmDelete = (id: string) => {
         setServiceToDelete(id);
