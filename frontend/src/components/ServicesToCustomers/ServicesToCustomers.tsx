@@ -18,6 +18,8 @@ function ServicesToCustomers() {
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
     const [serviceToDelete, setServiceToDelete] = React.useState<string | null>(null);
+    const [editService, setEditService] = React.useState<Service | null>(null);
+    const [dialogMode, setDialogMode] = React.useState<'create' | 'edit'>('create');
 
     const fetchServices = async () => {
         const data = await getServices();
@@ -41,45 +43,81 @@ function ServicesToCustomers() {
         setDeleteConfirmOpen(false);
     };
 
-    const handleUpdate = (service: Service) => {
-        // Implement update logic here
-    };
+    const handleUpdate = async () => {
+        if (editService && editService._id) {
+            console.log(editService);
+            console.log(editService._id);
+            const updatedService = await updateService(editService._id, {
+                name: editService.name,
+                description: editService.description,
+                price: editService.price,
+            });
+            if (updatedService) {
+                setSnackbarMessage('Service updated successfully');
+                setSnackbarOpen(true);
+            }
+            await fetchServices();
+            setEditService(null);
+            handleClose();
+        }
+      };
 
-    const handleClickOpen = () => {
+      const handleClickOpen = () => {
+        setNewService({
+          name: '',
+          description: '',
+          price: '0', // price is a string
+        });
+        setDialogMode('create'); // Set dialog mode to 'create'
         setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+      };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setNewService(prevState => ({
-            ...prevState,
-            [name]: name === 'price' ? parseFloat(value) : value
+          ...prevState,
+          [name]: value, // price is a string
         }));
-    };
-
-    const handleSubmit = async () => {
-        const service = await createService({
-          name: newService.name,
-          description: newService.description,
-          price: parseFloat(newService.price),
-        });
-        if (service) {
-          setSnackbarMessage('Service created successfully');
-          setSnackbarOpen(true);
-        }
-        await fetchServices();
-        handleClose();
       };
+
+      const handleSubmit = async () => {
+        if (editService) {
+            handleUpdate();
+        } else {
+            const service = await createService({
+                name: newService.name,
+                description: newService.description,
+                price: parseFloat(newService.price),
+            });
+            if (service) {
+                setSnackbarMessage('Service created successfully');
+                setSnackbarOpen(true);
+            }
+            await fetchServices();
+            handleClose();
+        }
+    };
 
     const handleConfirmDelete = (id: string) => {
         setServiceToDelete(id);
         setDeleteConfirmOpen(true);
     };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleEdit = (service: Service) => {
+        setEditService(service);
+        setNewService({
+            name: service.name,
+            description: service.description,
+            price: service.price.toString(), // Convert price to string
+        });
+        setDialogMode('edit'); // Set dialog mode to 'edit'
+        setOpen(true);
+    };
+    
     const columns: GridColDef[] = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'name', headerName: 'Name', width: 130 },
@@ -92,24 +130,25 @@ function ServicesToCustomers() {
             width: 150,
             renderCell: (params) => {
                 const onClickDelete = () => {
-                    if (params.row.id) {
-                        handleConfirmDelete(params.row.id as string);
+                    if (params.row._id) {
+                        handleConfirmDelete(params.row._id as string);
                     } else {
                         console.error('Cannot delete service: id is undefined');
                     }
                 };
 
-                const onClickUpdate = () => {
-                    if (params.row.id) {
-                        handleUpdate(params.row as Service);
+                const onClickEdit = () => {
+                    if (params.row._id) {
+                    console.log(params);
+                      handleEdit(params.row as Service);
                     } else {
-                        console.error('Cannot update service: _id is undefined');
+                      console.error('Cannot edit service: id is undefined');
                     }
-                };
+                  };
 
                 return (
                     <>
-                        <IconButton onClick={onClickUpdate} color="primary" aria-label="update">
+                        <IconButton onClick={onClickEdit} color="primary" aria-label="update">
                             <EditIcon />
                         </IconButton>
                         <IconButton onClick={onClickDelete} color="secondary" aria-label="delete">
@@ -120,9 +159,9 @@ function ServicesToCustomers() {
             },
         },
     ];
-
+console.log(services);
     const rows = services.map((service) => ({
-        id: service._id,
+        _id: service._id,
         name: service.name,
         description: service.description,
         price: service.price,
@@ -139,7 +178,7 @@ function ServicesToCustomers() {
                 <DataGrid
                     rows={rows}
                     columns={columns}
-                    getRowId={(row) => row.id}
+                    getRowId={(row) => row._id}
                 />
             </div>
             <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleClickOpen} style={{ marginTop: '20px' }}>
@@ -159,17 +198,17 @@ function ServicesToCustomers() {
                 </DialogActions>
             </Dialog>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Create New Service</DialogTitle>
-                <DialogContent>
-                    <TextField autoFocus margin="dense" name="name" label="Name" type="text" fullWidth variant="standard" onChange={handleChange} />
-                    <TextField margin="dense" name="description" label="Description" type="text" fullWidth variant="standard" onChange={handleChange} />
-                    <TextField margin="dense" name="price" label="Price" type="text" fullWidth variant="standard" onChange={handleChange} />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Submit</Button>
-                </DialogActions>
-            </Dialog>
+  <DialogTitle>{dialogMode === 'create' ? 'Create New Service' : 'Edit Service'}</DialogTitle>
+  <DialogContent>
+    <TextField autoFocus margin="dense" name="name" label="Name" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.name} />
+    <TextField margin="dense" name="description" label="Description" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.description} />
+    <TextField margin="dense" name="price" label="Price" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.price} />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleClose}>Cancel</Button>
+    <Button onClick={handleSubmit}>{dialogMode === 'create' ? 'Create' : 'Update'}</Button>
+  </DialogActions>
+</Dialog>
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}

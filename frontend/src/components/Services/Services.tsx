@@ -5,15 +5,7 @@ import { getServices } from '../../api/serviceApi';
 import { withStyles } from '@material-ui/core/styles';
 import Review from '../Review/Review'; // Import the Review component
 import EditIcon from '@material-ui/icons/Edit';
-
-
-
-interface Service {
-  _id: { $oid: string };
-  name: string;
-  description: string;
-  price: number;
-}
+import { Service } from '../../types/types';
 
 // Assume you have a userId, you might need to fetch it from your user context or authentication
 const userId = '6623f105eeef89be3d9bb88d';
@@ -90,7 +82,7 @@ function Services() {
   return (
     <Grid container spacing={3}>
       {services.map((service) => (
-        <Grid item xs={12} sm={6} md={4} key={service._id.$oid}>
+        <Grid item xs={12} sm={6} md={4} key={service._id}>
           <Card className={classes.root}>
             <CardContent>
             <Typography variant="h5" component="div" className={classes.title}>
@@ -107,7 +99,7 @@ function Services() {
             <Button 
   size="small" 
   className={`${classes.button} ${classes.reviewButton}`} 
-  onClick={() => handleClickOpen(service._id.$oid)}
+  onClick={() => handleClickOpen(service._id)}
 >
   <EditIcon />
   Write a Review

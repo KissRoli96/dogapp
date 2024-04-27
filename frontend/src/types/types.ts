@@ -58,9 +58,7 @@ export interface User {
   }
 
   export interface Service {
-    _id: {
-      $oid: string;
-    };
+    _id: string;
     name: string;
     description: string;
     price: number;
