@@ -65,3 +65,7 @@ export interface User {
     __v: number;
     // Add any other fields you might have
   }
+
+  export interface ErrorResponse {
+    error: string;
+}

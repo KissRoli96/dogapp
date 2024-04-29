@@ -9,6 +9,7 @@ import { getServices, updateService, deleteService, createService } from '../../
 import './ServicesToCustomers.css';
 import { Service } from '../../types/types';
 import { Snackbar } from '@mui/material';
+import { useState } from 'react';
 
 function ServicesToCustomers() {
     const [services, setServices] = React.useState<Service[]>([]);
@@ -20,6 +21,8 @@ function ServicesToCustomers() {
     const [serviceToDelete, setServiceToDelete] = React.useState<string | null>(null);
     const [editService, setEditService] = React.useState<Service | null>(null);
     const [dialogMode, setDialogMode] = React.useState<'create' | 'edit'>('create');
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState('');
 
     const fetchServices = async () => {
         const data = await getServices();
@@ -45,22 +48,18 @@ function ServicesToCustomers() {
 
     const handleUpdate = async () => {
         if (editService && editService._id) {
-            console.log(editService);
-            console.log(editService._id);
-            const updatedService = await updateService(editService._id, {
-                name: editService.name,
-                description: editService.description,
-                price: editService.price,
-            });
+            const { _id, __v, ...editServiceBody } = editService; // Exclude __v from the object
+            const updatedService = await updateService(_id, editServiceBody);
             if (updatedService) {
-                setSnackbarMessage('Service updated successfully');
-                setSnackbarOpen(true);
+                setDialogMessage('Service updated successfully');
+            } else {
+                setDialogMessage('Failed to update service');
             }
             await fetchServices();
             setEditService(null);
             handleClose();
         }
-      };
+    };
 
       const handleClickOpen = () => {
         setNewService({
@@ -69,32 +68,39 @@ function ServicesToCustomers() {
           price: '0', // price is a string
         });
         setDialogMode('create'); // Set dialog mode to 'create'
+        setDialogMessage('');
         setOpen(true);
       };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setNewService(prevState => ({
           ...prevState,
-          [name]: value, // price is a string
+          [name]: value,
         }));
-      };
+        if (dialogMode === 'edit' && editService) {
+          setEditService(prevState => prevState ? {
+            ...prevState,
+            [name]: value,
+          } : null);
+        }
+    };
 
-      const handleSubmit = async () => {
+    const handleSubmit = async () => {
         if (editService) {
             handleUpdate();
         } else {
-            const service = await createService({
+            const response = await createService({
                 name: newService.name,
                 description: newService.description,
                 price: parseFloat(newService.price),
             });
-            if (service) {
-                setSnackbarMessage('Service created successfully');
-                setSnackbarOpen(true);
+            if ('error' in response) {
+                setDialogMessage(response.error);
+            } else {
+                setDialogMessage('Service created successfully');
             }
             await fetchServices();
-            handleClose();
         }
     };
 
@@ -105,6 +111,7 @@ function ServicesToCustomers() {
 
     const handleClose = () => {
         setOpen(false);
+        setDialogMessage('');
     };
 
     const handleEdit = (service: Service) => {
@@ -139,7 +146,6 @@ function ServicesToCustomers() {
 
                 const onClickEdit = () => {
                     if (params.row._id) {
-                    console.log(params);
                       handleEdit(params.row as Service);
                     } else {
                       console.error('Cannot edit service: id is undefined');
@@ -159,7 +165,6 @@ function ServicesToCustomers() {
             },
         },
     ];
-console.log(services);
     const rows = services.map((service) => ({
         _id: service._id,
         name: service.name,
@@ -198,16 +203,17 @@ console.log(services);
                 </DialogActions>
             </Dialog>
             <Dialog open={open} onClose={handleClose}>
-  <DialogTitle>{dialogMode === 'create' ? 'Create New Service' : 'Edit Service'}</DialogTitle>
-  <DialogContent>
-    <TextField autoFocus margin="dense" name="name" label="Name" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.name} />
-    <TextField margin="dense" name="description" label="Description" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.description} />
-    <TextField margin="dense" name="price" label="Price" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.price} />
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleClose}>Cancel</Button>
-    <Button onClick={handleSubmit}>{dialogMode === 'create' ? 'Create' : 'Update'}</Button>
-  </DialogActions>
+    <DialogTitle>{dialogMode === 'create' ? 'Create New Service' : 'Edit Service'}</DialogTitle>
+    <DialogContent>
+        <TextField autoFocus margin="dense" name="name" label="Name" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.name} />
+        <TextField margin="dense" name="description" label="Description" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.description} />
+        <TextField margin="dense" name="price" label="Price" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.price} />
+        {dialogMessage && <p>{dialogMessage}</p>} {/* Display the message here */}
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleSubmit}>{dialogMode === 'create' ? 'Create' : 'Update'}</Button>
+    </DialogActions>
 </Dialog>
             <Snackbar
                 open={snackbarOpen}

@@ -1,5 +1,6 @@
 import api from './api';
-import { Service } from '../types/types';
+import { Service, ErrorResponse} from '../types/types';
+
 
 export const getServices = async (): Promise<Service[]> => {
   try {
@@ -19,20 +20,26 @@ export const getService = async (id: string): Promise<Service> => {
   }
 };
 
-export const createService = async (serviceData: Partial<Service>): Promise<Service> => {
+export const createService = async (serviceData: Partial<Service>): Promise<Service | ErrorResponse> => {
   try {
-    const response = await api.post<Service>('/service', serviceData);
-    return response.data;
-  } catch (error) {
-    throw error;
+      const response = await api.post<Service>('/service', serviceData);
+      return response.data;
+  } catch (error: any) {
+      if (error.response && error.response.data) {
+          return { error: error.response.data.message };
+      }
+      throw error;
   }
 };
 
-export const updateService = async (id: string, serviceData: Partial<Service>): Promise<Service> => {
+export const updateService = async (id: string, serviceData: Partial<Service>): Promise<Service | ErrorResponse> => {
   try {
     const response = await api.put<Service>(`/service/${id}`, serviceData);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+        return { error: error.response.data.message };
+    }
     throw error;
   }
 };
