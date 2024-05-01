@@ -39,22 +39,30 @@ export interface User {
     date: Date;
     time: string;
     duration: number;
-    status: 'pending' | 'confirmed' | 'cancelled';
+    status: Status;
     notes: string;
     service: string; // ObjectId
     dog: string; // ObjectId
     user: string; // ObjectId
   }
+
+  export enum Status {
+    Pending = 'pending',
+    Accepted = 'accepted',
+    Rejected = 'rejected'
+}
   
   export interface Application {
+    _id: string;
     lastName: string;
     firstName: string;
-    dateOfBirth: Date;
+    dateOfBirth: string;
     placeOfBirth: string;
     motivation: string;
     cv: string;
     email: string;
     phoneNumber: string;
+    status: Status;
   }
 
   export interface Service {

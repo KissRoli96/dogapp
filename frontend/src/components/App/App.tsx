@@ -12,6 +12,7 @@ import ResponsiveAppBar from '../ResponsiveAppBar/ResponsiveAppBar';
 import Profil from '../Profil/Profil';
 import Services from '../Services/Services';
 import ServicesToCustomers from '../ServicesToCustomers/ServicesToCustomers';
+import ApplicationManagement from '../ApplicationManagement/ApplicationManagement';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/applications" element={<ApplicationManagement />} />
           <Route path="/servicestocustomers" element={<ServicesToCustomers />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/user/:id" element={<Profil />} />

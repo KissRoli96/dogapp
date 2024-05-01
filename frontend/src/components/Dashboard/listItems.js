@@ -11,6 +11,7 @@ import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import RateReviewIcon from '@mui/icons-material/RateReview';
+import AppsIcon from '@mui/icons-material/Apps';
 import { Link } from 'react-router-dom';
 
 export const mainListItems = (
@@ -57,6 +58,12 @@ export const mainListItems = (
         </ListItemIcon>
         <ListItemText primary="Reviews" />
       </ListItemButton>
+      <ListItemButton component={Link} to="/applications">
+        <ListItemIcon>
+        <AppsIcon /> 
+        </ListItemIcon>
+        <ListItemText primary="Applications" />
+      </ListItemButton >
     </React.Fragment>
 );
 

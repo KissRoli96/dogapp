@@ -10,6 +10,7 @@ const ApplicationSchema = new Schema({
   cv: { type: String, required: true }, // This will be a link to the stored PDF file
   email: { type: String, required: true },
   phoneNumber: { type: String, required: true },
+  status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' }, // New status field
 });
 
 const Application = mongoose.model('Application', ApplicationSchema);
