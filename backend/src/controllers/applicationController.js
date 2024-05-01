@@ -3,8 +3,9 @@ Joi.objectId = require('joi-objectid')(Joi);
 const Application = require('../models/application');
 const multer = require('multer');
 const path = require('path');
+const uploadsDir = path.join(__dirname, '../../public/uploads');
 
-const applcationValidationSchema = Joi.object({
+const applicationValidationSchema = Joi.object({
     lastName: Joi.string().required(),
     firstName: Joi.string().required(),
     dateOfBirth: Joi.date().required(),
@@ -17,7 +18,7 @@ const applcationValidationSchema = Joi.object({
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../public/uploads');
+        cb(null, uploadsDir);
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -44,9 +45,15 @@ const upload = multer({
 });
 
 // Create an application
-exports.createApplication = upload.single('cv'), async (req, res) => {
+exports.createApplication = async (req, res) => {
     const { error } = applicationValidationSchema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) {
+        const errorMessages = error.details.reduce((acc, detail) => {
+            acc[detail.path[0]] = detail.message;
+            return acc;
+        }, {});
+        return res.status(400).json(errorMessages);
+    }
 
     const application = new Application({
         lastName: req.body.lastName,
@@ -91,7 +98,7 @@ exports.getApplicationById = async (req, res) => {
 };
 
 // Update an application
-exports.updateApplication = upload.single('cv'), async (req, res) => {
+exports.updateApplication = async (req, res) => {
     const { error } = applicationValidationSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -107,7 +114,7 @@ exports.updateApplication = upload.single('cv'), async (req, res) => {
     };
 
     try {
-        const updatedApplication = await Application.findByIdAndUpdate(req, updatedApplicationData, { new: true });
+        const updatedApplication = await Application.findByIdAndUpdate(req.params.id, updatedApplicationData, { new: true });
         res.json(updatedApplication);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -123,3 +130,20 @@ exports.deleteApplication = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+// Update the status of an application
+exports.updateApplicationStatus = async (req, res) => {
+    const status = req.body.status;
+    if (!['pending', 'accepted', 'rejected'].includes(status)) {
+        return res.status(400).send('Invalid status');
+    }
+
+    try {
+        const updatedApplication = await Application.findByIdAndUpdate(req.params.id, { status }, { new: true });
+        res.json(updatedApplication);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.upload = upload;
