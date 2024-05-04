@@ -7,7 +7,8 @@ const dogSchemaJoi = Joi.object({
     gender: Joi.string().valid('male', 'female').required(),
     breed: Joi.string().required(),
     age: Joi.number().required(),
-    owner: Joi.objectId().required()
+    owner: Joi.objectId().required(),
+    picture: Joi.string().required()
 });
 
 // Create a new dog
