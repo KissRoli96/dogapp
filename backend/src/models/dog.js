@@ -22,7 +22,12 @@ const dogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  }
+  },
+  picture: {
+    type: String,
+    required: true
+  }, // This will be a link to the stored Picture
+
 });
 
 const Dog = mongoose.model('Dog', dogSchema);
