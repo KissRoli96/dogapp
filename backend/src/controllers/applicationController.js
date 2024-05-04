@@ -154,8 +154,6 @@ exports.updateApplicationStatus = async (req, res) => {
 // Get a CV by application ID
 exports.getApplicationCv = async (req, res) => {
     try {
-        console.log(req.params.id);
-        console.log(req.params);
         const application = await Application.findById(req.params.id);
         if (application == null) {
             return res.status(404).json({ message: 'Cannot find application' });
