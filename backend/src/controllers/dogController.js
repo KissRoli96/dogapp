@@ -104,17 +104,22 @@ exports.updateDog = async (req, res) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  const updatedDog = new Dog({
+  if (!req.file) {
+    return res.status(400).json({ picture: "\"picture\" is required" });
+  }
+
+
+  const updatedDogData = {
     name: req.body.name,
     gender: req.body.gender,
     breed: req.body.breed,
     age: req.body.age,
-    owner: req.user._id, // Get the user's id from req.user._id
+    owner: '663219e5d704b104f3e11f7b',
     picture: req.file.path,
-  });
-
+  };
+  
   try {
-    const updatedDog = await Dog.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedDog = await Dog.findByIdAndUpdate(req.params.id, updatedDogData, { new: true });
     if (!updatedDog) return res.status(404).json({ error: 'Dog not found' });
     res.json(updatedDog);
   } catch (err) {
