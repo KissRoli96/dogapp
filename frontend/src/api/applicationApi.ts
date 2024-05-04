@@ -7,7 +7,7 @@ export const getApplications = async (): Promise<Application[]> => {
     const response = await api.get<Application[]>('/applications');
     return response.data;
   } catch (error) {
-    throw error;
+    throw new Error(`Failed to get applications: ${(error as Error).message}`);
   }
 };
 
@@ -16,7 +16,7 @@ export const getApplication = async (id: string): Promise<Application> => {
     const response = await api.get<Application>(`/application/${id}`);
     return response.data;
   } catch (error) {
-    throw error;
+    throw new Error(`Failed to get application with id ${id}: ${(error as Error).message}`);
   }
 };
 
@@ -63,5 +63,16 @@ export const updateApplicationStatus = async (id: string, status: Status): Promi
     return response.data;
   } catch (error) {
     throw error;
+  }
+};
+
+export const getApplicationCv = async (id: string): Promise<Blob> => {
+  try {
+    const response = await api.get<Blob>(`/application/${id}/cv`, {
+      responseType: 'blob', // Important: set the responseType to 'blob'
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to get CV for application with id ${id}: ${(error as Error).message}`);
   }
 };

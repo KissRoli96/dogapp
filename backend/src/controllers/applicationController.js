@@ -4,6 +4,7 @@ const Application = require('../models/application');
 const multer = require('multer');
 const path = require('path');
 const uploadsDir = path.join(__dirname, '../../public/uploads');
+const fs = require('fs');
 
 const applicationValidationSchema = Joi.object({
     lastName: Joi.string().required(),
@@ -11,9 +12,9 @@ const applicationValidationSchema = Joi.object({
     dateOfBirth: Joi.date().required(),
     placeOfBirth: Joi.string().required(),
     motivation: Joi.string().required(),
-    cv: Joi.string().required(), // This will be a link to the stored PDF file
     email: Joi.string().email().required(),
     phoneNumber: Joi.string().pattern(/^[0-9]+$/).required(),
+    status: Joi.string().valid('pending', 'accepted', 'rejected').default('pending').required()
 });
 
 const storage = multer.diskStorage({
@@ -53,6 +54,10 @@ exports.createApplication = async (req, res) => {
             return acc;
         }, {});
         return res.status(400).json(errorMessages);
+    }
+
+    if (!req.file) {
+        return res.status(400).json({ cv: "\"cv\" is required" });
     }
 
     const application = new Application({
@@ -143,6 +148,36 @@ exports.updateApplicationStatus = async (req, res) => {
         res.json(updatedApplication);
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+// Get a CV by application ID
+exports.getApplicationCv = async (req, res) => {
+    try {
+        console.log(req.params.id);
+        console.log(req.params);
+        const application = await Application.findById(req.params.id);
+        if (application == null) {
+            return res.status(404).json({ message: 'Cannot find application' });
+        }
+
+        // Check if the application has a cv
+        if (!application.cv) {
+            return res.status(404).json({ message: 'Cannot find CV' });
+        }
+
+        // Check if the file exists
+        if (!fs.existsSync(application.cv)) {
+            return res.status(404).json({ message: 'Cannot find CV' });
+        }
+
+        // Set the Content-Type header to application/pdf
+        res.setHeader('Content-Type', 'application/pdf');
+
+        // Send the file as a response
+        res.sendFile(application.cv);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
     }
 };
 

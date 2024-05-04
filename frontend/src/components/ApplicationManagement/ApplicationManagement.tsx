@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { getApplications, updateApplicationStatus } from '../../api/applicationApi';
+import { getApplications, updateApplicationStatus, getApplicationCv } from '../../api/applicationApi';
 import { Application, Status } from '../../types/types';
 import { makeStyles } from '@mui/styles';
 import IconButton from '@mui/material/IconButton';
@@ -13,11 +13,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom';
-
-
-
-
-
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const useStyles = makeStyles({
   card: {
@@ -53,6 +49,7 @@ const ApplicationManagement = () => {
   const [open, setOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const classes = useStyles();
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -66,6 +63,20 @@ const ApplicationManagement = () => {
     };
     fetchApplications();
   }, []);
+
+  useEffect(() => {
+    if (selectedApplication) {
+      console.log(selectedApplication._id);
+      getApplicationCv(selectedApplication._id)
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          setFileUrl(url);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  }, [selectedApplication]);
 
   const handleOpen = (application: Application) => {
     setSelectedApplication(application);
@@ -99,8 +110,6 @@ const ApplicationManagement = () => {
       console.error('Error updating application: ', error);
     }
   };
-
-
 
 const columns: GridColDef[] = [
     { field: '_id', headerName: 'ID', width: 70 },
@@ -160,7 +169,6 @@ const columns: GridColDef[] = [
     },
   ];
 
-
   return (
     <div style={{ height: 400, width: '100%' }} className={classes.root}>
       <h1 style={{ marginBottom: '20px' }}>They applied for training in dog cosmetics</h1>
@@ -186,10 +194,21 @@ const columns: GridColDef[] = [
             </Typography>
             <Typography color="textSecondary">
               <strong>Motivation:</strong> {selectedApplication?.motivation}
-            </Typography>
-            <Typography color="textSecondary">
-              <strong>CV:</strong> <a href={selectedApplication?.cv}>Link</a>
-            </Typography>
+              </Typography>
+              <Typography color="textSecondary">
+    <strong>CV: </strong> 
+    {fileUrl && (
+      <Button 
+        variant="contained" 
+        color="primary" 
+        href={fileUrl} 
+        download="file.pdf"
+        startIcon={<GetAppIcon />}
+      >
+        Download CV
+      </Button>
+    )}
+  </Typography>
             <Typography color="textSecondary">
               <strong>Email:</strong> {selectedApplication?.email}
             </Typography>

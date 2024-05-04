@@ -55,5 +55,7 @@ router.get('/application/:id', applicationController.getApplicationById);
 router.put('/application/:id', upload.single('cv'), applicationController.updateApplication);
 router.delete('/application/:id', applicationController.deleteApplication);
 router.put('/application/:id/status', applicationController.updateApplicationStatus);
+router.get('/application/:id/cv', applicationController.getApplicationCv);
+
 
 module.exports = router;
