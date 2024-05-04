@@ -33,6 +33,7 @@ export interface User {
     breed: string;
     age: number;
     owner: string; // ObjectId
+    picture: string
   }
   
   export interface Appointment {

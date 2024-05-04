@@ -36,6 +36,12 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 100 * 1024 * 1024 } // Limit file size to 100MB
+});
+
 // Create a new dog
 exports.createDog = async (req, res) => {
   const { error } = dogSchemaJoi.validate(req.body);
@@ -56,12 +62,12 @@ exports.createDog = async (req, res) => {
     gender: req.body.gender,
     breed: req.body.breed,
     age: req.body.age,
-    owner: req.user._id, // Get the user's id from req.user._id
+    owner: '663219e5d704b104f3e11f7b', // Get the user's id from req.user._id
     picture: req.file.path,
   });
 
   try {
-    const savedDog = dog.save();
+    const savedDog = await dog.save();
     res.json(savedDog);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -150,4 +156,4 @@ exports.getDogPicture = async (req, res) => {
   }
 };
 
-exports.upload = upload;
+exports.uploadDog = upload;

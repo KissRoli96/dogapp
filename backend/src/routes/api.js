@@ -7,6 +7,7 @@ const dogController = require('../controllers/dogController');
 const reviewController = require('../controllers/reviewController');
 const applicationController = require('../controllers/applicationController');
 const { upload } = require('../controllers/applicationController');
+const { uploadDog } = require('../controllers/dogController');
 
 // Példa GET kérés kezelése
 router.get('/example', (req, res) => {
@@ -37,9 +38,10 @@ router.delete('/service/:id', serviceController.deleteService);
 // Dog routes
 router.get('/dogs', dogController.getAllDogs);
 router.get('/dog/:id', dogController.getDogById);
-router.post('/dog', dogController.createDog);
-router.put('/dog/:id', dogController.updateDog);
+router.post('/dog', uploadDog.single('picture'), dogController.createDog);
+router.put('/dog/:id', uploadDog.single('picture'), dogController.updateDog);
 router.delete('/dog/:id', dogController.deleteDog);
+router.get('/dog/:id/picture', dogController.getDogPicture);
 
 // Review routes
 router.get('/reviews', reviewController.getReviews);
@@ -56,6 +58,5 @@ router.put('/application/:id', upload.single('cv'), applicationController.update
 router.delete('/application/:id', applicationController.deleteApplication);
 router.put('/application/:id/status', applicationController.updateApplicationStatus);
 router.get('/application/:id/cv', applicationController.getApplicationCv);
-
 
 module.exports = router;
