@@ -215,7 +215,7 @@ const columns: GridColDef[] = [
             <Typography color="textSecondary">
               <strong>Phone Number:</strong> {selectedApplication?.phoneNumber}
             </Typography>
-            <Button autoFocus onClick={handleClose} className={classes.closeButton}>
+            <Button variant='contained' color='secondary' autoFocus onClick={handleClose} className={classes.closeButton}>
               Close
             </Button>
           </CardContent>
