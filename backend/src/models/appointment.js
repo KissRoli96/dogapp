@@ -7,7 +7,11 @@ const appointmentSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  time: {
+  startTime: {
+    type: String,
+    required: true
+  },
+  endTime: {
     type: String,
     required: true
   },
@@ -20,7 +24,9 @@ const appointmentSchema = new mongoose.Schema({
     enum: ['pending', 'confirmed', 'cancelled'],
     default: 'pending'
   },
-  notes: String,
+  notes: {
+    type: String
+  },
   service: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Service',
