@@ -12,6 +12,7 @@ const dogSchemaJoi = Joi.object({
   breed: Joi.string().required(),
   age: Joi.number().required(),
   owner: Joi.objectId().required(),
+  weight: Joi.number().required(),
 });
 
 const storage = multer.diskStorage({
@@ -62,6 +63,7 @@ exports.createDog = async (req, res) => {
     gender: req.body.gender,
     breed: req.body.breed,
     age: req.body.age,
+    weight: req.body.weight,
     owner: '663219e5d704b104f3e11f7b', // Get the user's id from req.user._id
     picture: req.file.path,
   });
@@ -114,6 +116,7 @@ exports.updateDog = async (req, res) => {
     gender: req.body.gender,
     breed: req.body.breed,
     age: req.body.age,
+    weight: req.body.weight,
     owner: '663219e5d704b104f3e11f7b',
     picture: req.file.path,
   };

@@ -66,7 +66,6 @@ const ApplicationManagement = () => {
 
   useEffect(() => {
     if (selectedApplication) {
-      console.log(selectedApplication._id);
       getApplicationCv(selectedApplication._id)
         .then(blob => {
           const url = URL.createObjectURL(blob);

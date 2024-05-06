@@ -22,6 +22,7 @@ export const getDog = async (id: string): Promise<Dog> => {
 
 export const createDog = async (dogData: Dog): Promise<Dog | ErrorResponse> => {
     try {
+        console.log(dogData);
         const response = await api.post<Dog>('/dog', dogData, {
             headers: {
                 'Content-Type': 'multipart/form-data',

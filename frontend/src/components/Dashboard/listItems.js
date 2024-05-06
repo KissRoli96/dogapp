@@ -12,6 +12,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import AppsIcon from '@mui/icons-material/Apps';
+import PetsIcon from '@mui/icons-material/Pets';
 import { Link } from 'react-router-dom';
 
 export const mainListItems = (
@@ -33,6 +34,12 @@ export const mainListItems = (
         <PeopleIcon />
       </ListItemIcon>
       <ListItemText primary="Customers" />
+    </ListItemButton>
+    <ListItemButton component={Link} to="/dogs">
+      <ListItemIcon>
+      <PetsIcon />
+      </ListItemIcon>
+      <ListItemText primary="Dogs" />
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>

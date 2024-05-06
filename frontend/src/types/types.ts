@@ -28,9 +28,11 @@ export interface User {
   }
   
   export interface Dog {
+    _id: string;
     name: string;
     gender: 'male' | 'female';
     breed: string;
+    weight: number;
     age: number;
     owner: string; // ObjectId
     picture: string

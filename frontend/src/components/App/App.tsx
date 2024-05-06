@@ -13,6 +13,8 @@ import Profil from '../Profil/Profil';
 import Services from '../Services/Services';
 import ServicesToCustomers from '../ServicesToCustomers/ServicesToCustomers';
 import ApplicationManagement from '../ApplicationManagement/ApplicationManagement';
+import DogManagement from '../DogManagment/DogManagment';
+import DogForm from '../DogForm/DogForm';
 
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
           <Route path="/dogcosmetics-training" element={<DogcosmeticsTraining />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/dogs" element={<DogManagement />} />
+          <Route path="/dog" element={<DogForm />} />
           <Route path="/services" element={<Services />} />
           <Route path="/applications" element={<ApplicationManagement />} />
           <Route path="/servicestocustomers" element={<ServicesToCustomers />} />
