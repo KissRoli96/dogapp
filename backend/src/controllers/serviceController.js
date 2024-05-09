@@ -4,7 +4,8 @@ const Joi = require('joi');
 const serviceValidationSchema = Joi.object({
   name: Joi.string().required(),
   description: Joi.string().required(),
-  price: Joi.number().required()
+  price: Joi.number().required(),
+  duration: Joi.number().required()
 });
 
 

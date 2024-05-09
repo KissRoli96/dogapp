@@ -39,10 +39,11 @@ export interface User {
   }
   
   export interface Appointment {
+    _id: string;
     date: Date;
     time: string;
     duration: number;
-    status: Status;
+    status: AppointmentStatus;
     notes: string;
     service: string; // ObjectId
     dog: string; // ObjectId
@@ -53,6 +54,12 @@ export interface User {
     Pending = 'pending',
     Accepted = 'accepted',
     Rejected = 'rejected'
+}
+
+export enum AppointmentStatus {
+  Pending = 'pending',
+  Confirmed = 'confirmed',
+  Cancelled = 'cancelled'
 }
   
   export interface Application {
@@ -73,7 +80,7 @@ export interface User {
     name: string;
     description: string;
     price: number;
-    __v: number;
+    duration: number;
     // Add any other fields you might have
   }
 

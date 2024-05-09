@@ -12,6 +12,10 @@ const ServiceSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  duration: {
+    type: Number,
+    required: true,
+  },
   // Add other fields as necessary
 });
 
