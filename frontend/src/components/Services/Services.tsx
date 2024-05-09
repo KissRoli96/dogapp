@@ -31,6 +31,11 @@ const useStyles = makeStyles({
     fontWeight: 'bold',
     marginTop: '1em',
   },
+  duration: {
+    fontSize: '1.2em',
+    fontWeight: 'bold',
+    marginTop: '1em',
+  },
   button: {
     marginTop: '1em',
   },
@@ -78,7 +83,6 @@ function Services() {
       fetchServices();
     }, []);
 
-
   return (
     <Grid container spacing={3}>
       {services.map((service) => (
@@ -93,6 +97,9 @@ function Services() {
               </Typography>
               <Typography variant="body2" className={classes.price}>
                 Price: {service.price}Ft
+              </Typography>
+              <Typography variant="body2" className={classes.duration}>
+                Duration: {service.duration} Minutes
               </Typography>
             </CardContent>
             <CardActions>

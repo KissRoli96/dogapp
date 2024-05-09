@@ -14,7 +14,7 @@ import { useState } from 'react';
 function ServicesToCustomers() {
     const [services, setServices] = React.useState<Service[]>([]);
     const [open, setOpen] = React.useState(false);
-    const [newService, setNewService] = React.useState({ name: '', description: '', price: '' });
+    const [newService, setNewService] = React.useState({ name: '', description: '', price: '', duration: ''});
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
@@ -48,7 +48,7 @@ function ServicesToCustomers() {
 
     const handleUpdate = async () => {
         if (editService && editService._id) {
-            const { _id, __v, ...editServiceBody } = editService; // Exclude __v from the object
+            const { _id,  ...editServiceBody } = editService; // Exclude __v from the object
             const updatedService = await updateService(_id, editServiceBody);
             if (updatedService) {
                 setDialogMessage('Service updated successfully');
@@ -66,6 +66,7 @@ function ServicesToCustomers() {
           name: '',
           description: '',
           price: '0', // price is a string
+          duration: '0', // duration is a string
         });
         setDialogMode('create'); // Set dialog mode to 'create'
         setDialogMessage('');
@@ -94,6 +95,7 @@ function ServicesToCustomers() {
                 name: newService.name,
                 description: newService.description,
                 price: parseFloat(newService.price),
+                duration: parseFloat(newService.duration),
             });
             if ('error' in response) {
                 setDialogMessage(response.error);
@@ -120,6 +122,7 @@ function ServicesToCustomers() {
             name: service.name,
             description: service.description,
             price: service.price.toString(), // Convert price to string
+            duration: service.duration.toString(), // Convert duration to string
         });
         setDialogMode('edit'); // Set dialog mode to 'edit'
         setOpen(true);
@@ -130,7 +133,7 @@ function ServicesToCustomers() {
         { field: 'name', headerName: 'Name', width: 130 },
         { field: 'description', headerName: 'Description', width: 200 },
         { field: 'price', headerName: 'Price', width: 130 },
-        { field: '__v', headerName: 'Version', width: 70 },
+        { field: 'duration', headerName: 'Duration', width: 130},
         {
             field: 'actions',
             headerName: 'Actions',
@@ -170,7 +173,6 @@ function ServicesToCustomers() {
         name: service.name,
         description: service.description,
         price: service.price,
-        __v: service.__v,
     }));
 
     return (
@@ -208,6 +210,7 @@ function ServicesToCustomers() {
         <TextField autoFocus margin="dense" name="name" label="Name" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.name} />
         <TextField margin="dense" name="description" label="Description" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.description} />
         <TextField margin="dense" name="price" label="Price" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.price} />
+        <TextField margin="dense" name="duration" label="Duration" type="text" fullWidth variant="standard" onChange={handleChange} value={newService.duration} />
         {dialogMessage && <p>{dialogMessage}</p>} {/* Display the message here */}
     </DialogContent>
     <DialogActions>
