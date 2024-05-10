@@ -15,11 +15,15 @@ import ServicesToCustomers from '../ServicesToCustomers/ServicesToCustomers';
 import ApplicationManagement from '../ApplicationManagement/ApplicationManagement';
 import DogManagement from '../DogManagment/DogManagment';
 import DogForm from '../DogForm/DogForm';
+import Appointment from '../Appointment/Appointment';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
 function App() {
 
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
     <div className="App">
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,11 +43,13 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/applications" element={<ApplicationManagement />} />
           <Route path="/servicestocustomers" element={<ServicesToCustomers />} />
+          <Route path='/bookappointment' element={<Appointment />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/user/:id" element={<Profil />} />
         </Routes>
       </Router>
     </div>
+    </LocalizationProvider>
   );
 }
 

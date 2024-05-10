@@ -7,12 +7,13 @@ Joi.objectId = require('joi-objectid')(Joi);
 const appointmentValidationSchema = Joi.object({
   user: Joi.objectId().required(),
   date: Joi.date().required(),
-  time: Joi.string().required(),
+  startTime: Joi.string().required(),
+  endTime: Joi.string().required(),
   duration: Joi.number().required(),
   status: Joi.string().valid('pending', 'confirmed', 'cancelled').default('pending'),
   notes: Joi.string().allow(''),
   service: Joi.objectId().required(),
-  dog: Joi.objectId().required() 
+  dog: Joi.objectId().required()
 });
 
 // Create an appointment
@@ -22,16 +23,40 @@ const createAppointment = async (req, res) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  const { user, date, time, duration, notes, serviceType, dog } = req.body;
+  const { user, date, startTime, notes, service, dog } = req.body;
 
   try {
+    // Get the service to find its duration
+    const serviceObj = await Service.findById(service);
+    if (!serviceObj) {
+      return res.status(400).json({ error: 'Invalid service ID.' });
+    }
+
+    // Calculate the endTime based on the startTime and the service's duration
+    const endTime = new Date(new Date(date + ' ' + startTime).getTime() + serviceObj.duration * 60000).toLocaleTimeString();
+
+    // Check for overlapping appointments
+    const overlappingAppointments = await Appointment.find({
+      user,
+      date,
+      $or: [
+        { startTime: { $lte: startTime }, endTime: { $gt: startTime } },
+        { startTime: { $lt: endTime }, endTime: { $gte: endTime } },
+        { startTime: { $gt: startTime }, endTime: { $lt: endTime } },
+      ],
+    });
+
+    if (overlappingAppointments.length > 0) {
+      return res.status(400).json({ error: 'This time slot is already booked.' });
+    }
+
     const newAppointment = new Appointment({
       user,
       date,
-      time,
-      duration,
+      startTime,
+      endTime,
       notes,
-      serviceType,
+      service,
       dog
     });
 
@@ -54,7 +79,7 @@ const getAllAppointments = async (req, res) => {
   }
 };
 
-  // Get a specific appointment
+// Get a specific appointment
 const getAppointmentById = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id)
@@ -74,7 +99,7 @@ const getAppointmentById = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-  
+
 // Update an appointment
 const updateAppointment = async (req, res) => {
   const { error } = appointmentValidationSchema.validate(req.body);
@@ -89,21 +114,68 @@ const updateAppointment = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-  
-  // Delete an appointment
-  const deleteAppointment = async (req, res) => {
-    try {
-      await Appointment.findByIdAndDelete(req.params.id);
-      res.json({ message: 'Deleted appointment' });
-    } catch (err) {
-      res.status(500).json({ message: err.message });
+
+
+// Cancel an appointment
+const cancelAppointment = async (req, res) => {
+  try {
+    const cancelledAppointment = await Appointment.findByIdAndUpdate(
+      req.params.id,
+      { status: 'cancelled' },
+      { new: true }
+    );
+
+    if (!cancelledAppointment) {
+      return res.status(404).json({ message: 'Cannot find appointment' });
     }
-  };
-  
-  module.exports = {
-    createAppointment,
-    getAllAppointments,
-    getAppointmentById,
-    updateAppointment,
-    deleteAppointment
-  };
+
+    res.json(cancelledAppointment);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Reschedule an appointment
+const rescheduleAppointment = async (req, res) => {
+  const { date, startTime, endTime } = req.body;
+
+  try {
+    // Check for overlapping appointments
+    const overlappingAppointments = await Appointment.find({
+      user: '6639469db27e59c55b796a23',
+      date,
+      $or: [
+        { startTime: { $lte: startTime }, endTime: { $gt: startTime } },
+        { startTime: { $lt: endTime }, endTime: { $gte: endTime } },
+        { startTime: { $gt: startTime }, endTime: { $lt: endTime } },
+      ],
+    });
+
+    if (overlappingAppointments.length > 0) {
+      return res.status(400).json({ error: 'This time slot is already booked.' });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      req.params.id,
+      { date, startTime, endTime },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: 'Cannot find appointment' });
+    }
+
+    res.json(updatedAppointment);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  createAppointment,
+  getAllAppointments,
+  getAppointmentById,
+  updateAppointment,
+  cancelAppointment,
+  rescheduleAppointment
+};

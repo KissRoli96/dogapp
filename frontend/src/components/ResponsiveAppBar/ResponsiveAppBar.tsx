@@ -20,8 +20,7 @@ import './ResponsiveAppBar.css';
 const pages = [
   {name:'Services', path: '/services'},
   {name:'Dog', path: '/dog'},
-  {name:'Blog', path: '/blog'},
-  // {name:'Customers', path: '/customers'},
+  {name:'Book an appointment', path: '/bookappointment'},
   {name: 'Dog Grooming Courses', path: '/dogcosmetics-training'},
 
 ];

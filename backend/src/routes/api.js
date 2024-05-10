@@ -18,8 +18,8 @@ router.get('/example', (req, res) => {
 router.get('/appointments', appointmentController.getAllAppointments);
 router.get('/appointment/:id', appointmentController.getAppointmentById);
 router.post('/appointment', appointmentController.createAppointment);
-router.put('/appointment/:id', appointmentController.updateAppointment);
-router.delete('/appointment/:id', appointmentController.deleteAppointment);
+router.post('/appointment/:id/cancel', appointmentController.cancelAppointment);
+router.post('/appointment/:id/reschedule', appointmentController.rescheduleAppointment);
 
 //Felhaszálóval kapcsolatos Útvonalak
 router.get('/users', userController.getAllUsers);
