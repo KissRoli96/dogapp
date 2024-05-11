@@ -10,13 +10,19 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { Alert } from '@material-ui/lab';
+import { useLocation } from 'react-router-dom';
 
-function DogForm() {
+interface DogFormProps {
+    userId: string;
+  }
+ 
+function DogForm({userId}: DogFormProps) {
     const [open, setOpen] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const fileInput = useRef<HTMLInputElement>(null);
     const [error, setError] = useState<string | null>(null);
     const [openSnackbar, setOpenSnackbar] = useState(false);
+    const location = useLocation();
     const [dog, setDog] = useState<Partial<Dog>>({
         name: '',
         breed: '',

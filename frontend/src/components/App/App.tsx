@@ -18,9 +18,12 @@ import DogForm from '../DogForm/DogForm';
 import Appointment from '../Appointment/Appointment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { useContext } from 'react';
+import UserContext from '../contexts/UserContext';
 
 
 function App() {
+  const  userId  = '663219e5d704b104f3e11f7b';
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -34,12 +37,13 @@ function App() {
       </Helmet>
       <Router>
         <ResponsiveAppBar />
+        <UserContext.Provider value={{ userId }}>
         <Routes>
           <Route path="/dogcosmetics-training" element={<DogcosmeticsTraining />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/dogs" element={<DogManagement />} />
-          <Route path="/dog" element={<DogForm />} />
+          <Route path="/dog" element={<DogForm userId={userId} />} />
           <Route path="/services" element={<Services />} />
           <Route path="/applications" element={<ApplicationManagement />} />
           <Route path="/servicestocustomers" element={<ServicesToCustomers />} />
@@ -47,6 +51,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/user/:id" element={<Profil />} />
         </Routes>
+        </UserContext.Provider>
       </Router>
     </div>
     </LocalizationProvider>

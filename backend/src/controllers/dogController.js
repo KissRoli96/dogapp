@@ -89,10 +89,17 @@ exports.getAllDogs = async (req, res) => {
 // Get a dog by ID
 exports.getDogById = async (req, res) => {
   try {
-    const dog = await Dog.findById(req.params.id);
+    const dog = await Dog.findById(req.params.id).populate('owner');
     if (!dog) {
       return res.status(404).json({ error: 'Dog not found' });
     }
+    const userId = '663219e5d704b104f3e11f7b';
+    // Assuming req.user is the currently authenticated user
+    // (req.user._id.toString()
+    if (userId !== dog.owner._id.toString()) {
+      return res.status(403).json({ error: 'This dog does not belong to the current user' });
+    }
+
     res.json(dog);
   } catch (err) {
     return res.status(500).json({ message: err.message });

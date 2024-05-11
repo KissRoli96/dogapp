@@ -3,13 +3,13 @@ const Appointment = require('../models/appointment');
 const Joi = require('joi');
 const Dog = require('../models/dog');
 Joi.objectId = require('joi-objectid')(Joi);
+const Service = require('../models/service'); //
 
 const appointmentValidationSchema = Joi.object({
   user: Joi.objectId().required(),
   date: Joi.date().required(),
   startTime: Joi.string().required(),
   endTime: Joi.string().required(),
-  duration: Joi.number().required(),
   status: Joi.string().valid('pending', 'confirmed', 'cancelled').default('pending'),
   notes: Joi.string().allow(''),
   service: Joi.objectId().required(),
@@ -23,7 +23,8 @@ const createAppointment = async (req, res) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  const { user, date, startTime, notes, service, dog } = req.body;
+  console.log(req.body);
+  const { user, date, startTime,endTime,  notes, service, dog, status } = req.body;
 
   try {
     // Get the service to find its duration
@@ -33,8 +34,8 @@ const createAppointment = async (req, res) => {
     }
 
     // Calculate the endTime based on the startTime and the service's duration
-    const endTime = new Date(new Date(date + ' ' + startTime).getTime() + serviceObj.duration * 60000).toLocaleTimeString();
-
+    // const endTime = new Date(new Date(date + ' ' + startTime).getTime() + serviceObj.duration * 60000).toLocaleTimeString();
+    console.log(endTime);
     // Check for overlapping appointments
     const overlappingAppointments = await Appointment.find({
       user,
@@ -57,13 +58,15 @@ const createAppointment = async (req, res) => {
       endTime,
       notes,
       service,
-      dog
+      dog,
+      status
     });
 
     const savedAppointment = await newAppointment.save();
 
     res.status(201).json(savedAppointment);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };

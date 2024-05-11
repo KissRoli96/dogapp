@@ -39,10 +39,9 @@ export interface User {
   }
   
   export interface Appointment {
-    _id: string;
-    date: Date;
-    time: string;
-    duration: number;
+    startTime: string;
+    endTime: string;
+    date: string;
     status: AppointmentStatus;
     notes: string;
     service: string; // ObjectId
