@@ -23,7 +23,6 @@ const createAppointment = async (req, res) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  console.log(req.body);
   const { user, date, startTime,endTime,  notes, service, dog, status } = req.body;
 
   try {
@@ -33,9 +32,6 @@ const createAppointment = async (req, res) => {
       return res.status(400).json({ error: 'Invalid service ID.' });
     }
 
-    // Calculate the endTime based on the startTime and the service's duration
-    // const endTime = new Date(new Date(date + ' ' + startTime).getTime() + serviceObj.duration * 60000).toLocaleTimeString();
-    console.log(endTime);
     // Check for overlapping appointments
     const overlappingAppointments = await Appointment.find({
       user,

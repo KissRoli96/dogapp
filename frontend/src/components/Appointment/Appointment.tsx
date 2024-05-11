@@ -53,13 +53,37 @@ export default function Appointment() {
   const userId = '663219e5d704b104f3e11f7b'; // replace with actual userId
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [response, setResponse] = useState<Appointment | null>(null);
 
-
-  const SuccessMessage = () => (
+  const SuccessMessage = ({response}:{response: Appointment}) => (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
         <Typography variant="h4" component="div" >
             Successful appointment
         </Typography>
+        <Typography variant="body1" component="div">
+  <strong>Service:</strong> {response.service}
+</Typography>
+<Typography variant="body1" component="div">
+  Dog: {response.dog}
+</Typography>
+<Typography variant="body1" component="div">
+  StartTime: {response.startTime}
+</Typography>
+<Typography variant="body1" component="div">
+  EndTime: {response.endTime}
+</Typography>
+<Typography variant="body1" component="div">
+  User: {response.user}
+</Typography>
+<Typography variant="body1" component="div">
+  Status: {response.status}
+</Typography>
+<Typography variant="body1" component="div">
+  Status: {response.notes}
+</Typography>
+<Typography variant="body1" component="div">
+  Date: {response.date}
+</Typography>
     </Box>
 );
  
@@ -119,8 +143,7 @@ export default function Appointment() {
   };
 
   const bookAppointment = async () => {
-    // Here you would typically send the selected date to your server
-    // For the sake of this example, we'll just log it to the console
+
     const appointmentData = {
       service: selectedService?._id || '',
       date: Date(),
@@ -128,8 +151,8 @@ export default function Appointment() {
       user: userId,
       status:  AppointmentStatus.Pending,
       notes: notes,
-      startTime: startTime.format(), // replace with actual start time
-      endTime: endTime.format(), // replace with actual start time
+      startTime: startTime.format(), 
+      endTime: endTime.format(),
     };
       const response = await createAppointment(appointmentData);
       setOpen(true);
@@ -140,6 +163,7 @@ export default function Appointment() {
   if ('error' in response) {
     console.error(`Failed to book appointment: ${response.error}`);
   } else {
+    setResponse(response);
     console.log('Appointment booked successfully:', response);
   }
 
@@ -155,8 +179,8 @@ export default function Appointment() {
 
   return (
     <>
-    {isSubmitted ? (
-      <SuccessMessage />
+    {isSubmitted && response ? (
+      <SuccessMessage response={response} />
     ): (
     <Box>
       <Card>
