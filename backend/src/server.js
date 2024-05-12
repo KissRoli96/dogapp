@@ -5,8 +5,8 @@ const mongoose = require('./config/mongoose');
 const cors = require('cors');
 const router = require('./routes/api.js');
 const session = require('express-session');
-const Keycloak = require('keycloak-connect');
-const MongoDBStore = require('connect-mongodb-session')(session);
+// const Keycloak = require('keycloak-connect');
+// const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 const morgan = require('morgan');
 
@@ -18,6 +18,8 @@ app.use(bodyParser);  // Beépített JSON body parser
 app.use(cors());
 // bin\kc.bat start-dev ezzel inditom a kecloak servert
 // Keycloak setup
+const Keycloak = require('keycloak-connect');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const memoryStore = new session.MemoryStore();
 const store = new MongoDBStore({
   uri: 'mongodb://localhost/dogcosmetics',
@@ -33,9 +35,7 @@ app.use(session({
   saveUninitialized: true,
   store: memoryStore
 }));
-console.log(process.env.KEYCLOAK_URL);
-console.log(process.env.KEYCLOAK_REALM);
-console.log(process.env.KEYCLOAK_CLIENT_ID);
+
 const keycloak = new Keycloak({ store: memoryStore }, {
   "realm": `${process.env.KEYCLOAK_REALM}`,
   "auth-server-url": `${process.env.KEYCLOAK_URL}`,	
@@ -54,11 +54,10 @@ app.use(express.static('public'));
 //    - Importálni az API útválasztókat (routes/api.js)
 const apiRoutes = require('./routes/api');
 //    - Az '/api' prefix alatt lesznek kezelve az  API hívások
-app.use('/api', keycloak.protect('admin'), apiRoutes);
-// app.use('/api', keycloak.protect((token, request) => {
-//   return token.hasRole('admin') || token.hasRole('dogbeautician') || token.hasRole('guest') || token.hasRole('registereduser');
-// }), apiRoutes); // Protect API routes with Keycloak
-// app.use('/api', apiRoutes); // API routes witwhout keylcoak
+app.use('/api', keycloak.protect((token, request) => {
+  return token.hasRole('admin') || token.hasRole('dogbeautician') || token.hasRole('guest') || token.hasRole('registereduser');
+}), apiRoutes); // Protect API routes with Keycloak
+
 
 // Port beállítása és szerver indítása
 const PORT = process.env.PORT || 3000;

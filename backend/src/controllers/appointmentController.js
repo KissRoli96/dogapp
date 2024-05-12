@@ -3,7 +3,7 @@ const Appointment = require('../models/appointment');
 const Joi = require('joi');
 const Dog = require('../models/dog');
 Joi.objectId = require('joi-objectid')(Joi);
-const Service = require('../models/service'); //
+const Service = require('../models/service');
 
 const appointmentValidationSchema = Joi.object({
   user: Joi.objectId().required(),
