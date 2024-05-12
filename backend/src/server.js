@@ -5,8 +5,8 @@ const mongoose = require('./config/mongoose');
 const cors = require('cors');
 const router = require('./routes/api.js');
 const session = require('express-session');
-// const Keycloak = require('keycloak-connect');
-// const MongoDBStore = require('connect-mongodb-session')(session);
+const Keycloak = require('keycloak-connect');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 const morgan = require('morgan');
 
@@ -18,8 +18,6 @@ app.use(bodyParser);  // Beépített JSON body parser
 app.use(cors());
 // bin\kc.bat start-dev ezzel inditom a kecloak servert
 // Keycloak setup
-const Keycloak = require('keycloak-connect');
-const MongoDBStore = require('connect-mongodb-session')(session);
 const memoryStore = new session.MemoryStore();
 const store = new MongoDBStore({
   uri: 'mongodb://localhost/dogcosmetics',
