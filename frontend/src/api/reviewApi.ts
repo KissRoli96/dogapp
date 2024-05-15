@@ -44,3 +44,12 @@ export const deleteReview = async (id: string): Promise<void> => {
     throw error;
   }
 };
+
+export const getReviewsByUserId = async (userId: string): Promise<Review[]> => {
+  try {
+    const response = await api.get<Review[]>(`/reviews?userId=${userId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to get reviews by user ID ${userId}: ${(error as Error).message}`);
+  }
+}

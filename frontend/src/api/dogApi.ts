@@ -68,3 +68,12 @@ export const getDogPicture = async (id: string): Promise<Blob> => {
         throw new Error(`Failed to get dog picture with id ${id}: ${(error as Error).message}`);
     }
 }
+
+export const getDogsByOwnerId = async (ownerId: string): Promise<Dog[]> => {
+    try {
+        const response = await api.get<Dog[]>(`/dogs?ownerId=${ownerId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`Failed to get dogs for owner with id ${ownerId}: ${(error as Error).message}`);
+    }
+};

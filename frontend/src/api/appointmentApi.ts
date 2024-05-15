@@ -56,3 +56,12 @@ export const rescheduleAppointment = async (id: string, newSchedule: { date: str
         throw new Error(`Failed to reschedule appointment with id ${id}: ${(error as Error).message}`);
     }
 };
+
+export const getAppointmentsByUserId = async (userId: string): Promise<Appointment[]> => {
+    try {
+        const response = await api.get<Appointment[]>(`/appointments?userId=${userId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`Failed to get appointments for user with id ${userId}: ${(error as Error).message}`);
+    }
+};

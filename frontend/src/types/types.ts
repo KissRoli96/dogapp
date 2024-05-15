@@ -80,7 +80,6 @@ export enum AppointmentStatus {
     description: string;
     price: number;
     duration: number;
-    // Add any other fields you might have
   }
 
   export interface ErrorResponse {

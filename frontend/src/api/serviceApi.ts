@@ -53,3 +53,12 @@ export const deleteService = async (id: string): Promise<boolean> => {
     return false;
   }
 };
+
+export const getServicesByUserId = async (userId: string): Promise<Service[]> => {
+  try {
+    const response = await api.get<Service[]>(`/services?userId=${userId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to get services for user with id ${userId}: ${(error as Error).message}`);
+  }
+}
