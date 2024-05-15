@@ -14,6 +14,9 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
 
 const useStyles = makeStyles({
   card: {
@@ -44,12 +47,18 @@ const useStyles = makeStyles({
   },
 });
 
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const ApplicationManagement = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [open, setOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const classes = useStyles();
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -83,6 +92,14 @@ const ApplicationManagement = () => {
   };
 
   const handleStatusChange = async (id: string, status: Status) => {
+    if(status === Status.Accepted) {
+      setSnackbarMessage("You have successfully accepted the application!");
+      setSnackbarOpen(true);
+    }
+    if(status === Status.Rejected) {
+      setSnackbarMessage("You have successfully rejected the application");
+      setSnackbarOpen(true);
+    }
     await updateApplicationStatus(id, status);
     setApplications(applications.map(app => app._id === id ? { ...app, status } : app));
   };
@@ -109,6 +126,14 @@ const ApplicationManagement = () => {
       console.error('Error updating application: ', error);
     }
   };
+
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+
+    setSnackbarOpen(false);
+}
 
 const columns: GridColDef[] = [
     { field: '_id', headerName: 'ID', width: 70 },
@@ -170,6 +195,13 @@ const columns: GridColDef[] = [
 
   return (
     <div style={{ height: 400, width: '100%' }} className={classes.root}>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+                <div>
+                    <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                        {snackbarMessage}
+                    </Alert>
+                </div>
+            </Snackbar>
       <h1 style={{ marginBottom: '20px' }}>They applied for training in dog cosmetics</h1>
       <DataGrid rows={applications}
        columns={columns}
