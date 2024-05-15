@@ -19,7 +19,7 @@ import Appointment from '../Appointment/Appointment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useContext } from 'react';
-import UserContext from '../contexts/UserContext';
+import UserContext from '../Contexts/UserContext';
 
 
 function App() {
