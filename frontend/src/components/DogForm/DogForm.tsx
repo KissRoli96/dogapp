@@ -74,7 +74,7 @@ function DogForm({userId}: DogFormProps) {
     const SuccessMessage = () => (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
             <Typography variant="h4" component="div" color="success">
-                Successful application for the training
+                Successful dog creation
             </Typography>
         </Box>
     );
