@@ -79,7 +79,12 @@ exports.createDog = async (req, res) => {
 // Get all dogs
 exports.getAllDogs = async (req, res) => {
   try {
-    const dogs = await Dog.find();
+    const userId = req.query.userId;
+    let query = {};
+    if (userId) {
+      query.owner = userId;
+    }
+    const dogs = await Dog.find(query);
     res.json(dogs);
   } catch (err) {
     res.status(500).json({ message: err.message });

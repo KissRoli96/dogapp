@@ -67,11 +67,15 @@ const createAppointment = async (req, res) => {
   }
 };
 
+// Get all appointments
 const getAllAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find()
-      .populate('user')
-      .populate('dog');
+    const userId = req.query.userId;
+    let query = {};
+    if (userId) {
+      query.user = userId;
+    }
+    const appointments = await Appointment.find(query);
     res.json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });
