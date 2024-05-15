@@ -1,30 +1,10 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Avatar, Typography, Grid, Paper, makeStyles, Button } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import useFetchUserById from '../../api/useFetchUserById';
+import { Dog, User, Appointment, AppointmentStatus, Service } from '../../types/types';
 
-interface Address {
-  city: string;
-  country: string;
-}
 
-interface ProfileData {
-  firstName: string;
-  lastName: string;
-  age: number;
-  address: Address;
-}
-
-interface User {
-  _id: string;
-  username: string;
-  email: string;
-  profile: ProfileData;
-}
-
-interface ProfileProps {
-  user: User;
-}
 
 const useStyles = makeStyles((theme) => ({
   paper: {
