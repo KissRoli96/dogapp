@@ -259,7 +259,7 @@ function DogcosmeticsTraining() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <label>
-                                        <strong>Upload CV: </strong>
+                                        <strong>Upload CV: (ONLY PDF Format) </strong>
                                         <input
                                             type="file"
                                             onChange={handleFileChange}
