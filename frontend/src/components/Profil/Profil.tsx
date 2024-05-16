@@ -2,9 +2,11 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { Avatar, Typography, Grid, Paper, makeStyles, Button, CardMedia } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import useFetchUserById from '../../api/useFetchUserById';
-import { Dog, User, Appointment, AppointmentStatus, Service } from '../../types/types';
+import { Dog, User, Appointment, AppointmentStatus, Service, Review } from '../../types/types';
 import useFetchDogsByUserId from '../../api/useFetchDogsByOwnerId';
 import { getDogPicture } from '../../api/dogApi';
+import { getService } from '../../api/serviceApi';
+import { getReviews,getReviewsByUserId } from '../../api/reviewApi';
 import useFetchAppointmentsByUserId from '../../api/useFetchAppointmentsByUserId';
 import useFetchServicesByUserId from '../../api/useFetchServicesByUserId';
 import useFetchReviewByUserId from '../../api/useFetchReviewByUserId';
@@ -32,10 +34,13 @@ export const Profile: React.FC = () => {
   const classes = useStyles();
   const { id } = useParams<{ id: string }>();
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [serviceNames, setServiceNames] = useState<Record<string, string>>({});
   const { data: user, error: userError } = useFetchUserById(id);
   const { data: dogs, error: dogsError } = useFetchDogsByUserId(id);
   const { data: appointments, error: appointmentsError } = useFetchAppointmentsByUserId(id);
+  const { data: services, error: servicesError } = useFetchServicesByUserId(id);
+
 
   useEffect(() => {
     if (user && dogs) {
@@ -49,7 +54,25 @@ export const Profile: React.FC = () => {
         });
     }
   }, [user, dogs]);
-  
+
+  useEffect(() => {
+    if (id) { // Check if id is not undefined
+      getReviewsByUserId(id)
+        .then((reviewsData: Review[]) => {
+          setReviews(reviewsData);
+          return Promise.all(
+            reviewsData.map((review) =>
+              getService(review.service).then((service: Service) => [review.service, service.name] as [string, string])
+            )
+          ) as Promise<[string, string][]>;
+        })
+        .then((servicesData: [string, string][]) =>
+          setServiceNames(Object.fromEntries(servicesData))
+        )
+        .catch((error: Error) => console.error(error));
+    }
+  }, [id]);
+
   if (!id) {
     return <div>Invalid user ID</div>;
   }
@@ -68,6 +91,10 @@ export const Profile: React.FC = () => {
   }
 
   if (!appointments || appointments.length === 0) { 
+    return <div>Loading...</div>; // or a loading spinner
+  }
+
+  if (!reviews || reviews.length === 0) {
     return <div>Loading...</div>; // or a loading spinner
   }
 
@@ -194,7 +221,6 @@ export const Profile: React.FC = () => {
             <Typography variant="body2" color="textSecondary">
               Notes: {appointment.notes}
             </Typography>
-            {/* ... rest of appointment's data */}
           </Grid>
         </Grid>
       </Grid>
@@ -209,6 +235,44 @@ export const Profile: React.FC = () => {
             </Grid>
   </Paper>
 ))}
+<Typography variant="h3" gutterBottom className={classes.title}>
+                             Your Review(s):
+                        </Typography>
+{reviews.map((review, index) => (
+  <Paper key={index} className={classes.paper}>
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm container>
+        <Grid item xs container direction="column" spacing={2}>
+          <Grid item xs>
+            <Typography gutterBottom variant="h6">
+              Review {index + 1}:
+            </Typography>
+            <Typography variant="h4" gutterBottom>
+            Service: {serviceNames[review.service]}
+              </Typography>
+            <Typography variant="body2" gutterBottom>
+              Date: {new Date(review.date).toDateString()}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Rating: {review.rating}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Comments: {review.content}
+            </Typography>
+          </Grid>
+        </Grid>
+      </Grid>
+      </Grid>
+      <Grid item>
+              <Button variant="contained" color="primary" className={classes.button} onClick={handleEdit}>
+                Edit Review
+              </Button>
+              <Button variant="contained" color="secondary" className={classes.button} onClick={handleDelete}>
+              Delete Review
+              </Button>
+            </Grid>
+      </Paper>
+    ))}
     </>
   );
 };
