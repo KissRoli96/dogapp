@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { Button, TextField, Typography, makeStyles } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
-import { createReview } from '../../api/reviewApi'; // Import the createReview function
+import { createReview } from '../../api/reviewApi';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 
 interface ReviewProps {
   serviceId: string;
   userId: string;
+  closeReview: () => void;
+  setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSnackbarMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface Review {
@@ -14,6 +19,10 @@ interface Review {
   content: string;
   date: Date;
   rating: number;
+}
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const useStyles = makeStyles({
@@ -40,10 +49,14 @@ const useStyles = makeStyles({
     },
   });
 
-function Review({ serviceId, userId }: ReviewProps) {
+function Review({ serviceId, userId, closeReview, setSnackbarOpen, setSnackbarMessage}: ReviewProps) {
   const classes = useStyles();
   const [rating, setRating] = useState<number | null>(2);
   const [content, setContent] = useState('');
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+
+
 
   const handleSubmit = async () => {
     const review: Review = {
@@ -57,14 +70,31 @@ function Review({ serviceId, userId }: ReviewProps) {
     try {
       // Call the createReview function with the review object
       const savedReview = await createReview(review);
-      console.log(savedReview); // Log the saved review
+      setSnackbarMessage('Review submitted successfully');
+      setSnackbarOpen(true);
+      closeReview(); // Close the Review component
     } catch (error) {
       console.error(error); // Log any errors
     }
   };
 
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+    setSnackbarOpen(false);
+  }
+
   return (
+    <>
     <div className={classes.root}>
+      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+                <div>
+                    <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                        {snackbarMsg}
+                    </Alert>
+                </div>
+            </Snackbar>
       <Typography component="legend">Rate this service</Typography>
       <div className={classes.rating}>
         <Rating
@@ -89,6 +119,7 @@ function Review({ serviceId, userId }: ReviewProps) {
         Submit Review
       </Button>
     </div>
+    </>
   );
 }
 

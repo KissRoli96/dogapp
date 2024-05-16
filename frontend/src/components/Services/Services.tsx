@@ -6,9 +6,15 @@ import { withStyles } from '@material-ui/core/styles';
 import Review from '../Review/Review'; // Import the Review component
 import EditIcon from '@material-ui/icons/Edit';
 import { Service } from '../../types/types';
-
+import { useState } from 'react';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 // Assume you have a userId, you might need to fetch it from your user context or authentication
 const userId = '6623f105eeef89be3d9bb88d';
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles({
   root: {
@@ -64,6 +70,9 @@ function Services() {
     const [services, setServices] = React.useState<Service[]>([]);
     const [open, setOpen] = React.useState(false);
     const [selectedServiceId, setSelectedServiceId] = React.useState('');
+    const [isReviewOpen, setIsReviewOpen] = useState(true);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
   
     const handleClickOpen = (serviceId: string) => {
       setSelectedServiceId(serviceId);
@@ -73,6 +82,13 @@ function Services() {
     const handleClose = () => {
       setOpen(false);
     };
+
+    const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+      if (reason === 'clickaway') {
+          return;
+      }
+      setSnackbarOpen(false);
+    }
   
     React.useEffect(() => {
       const fetchServices = async () => {
@@ -84,6 +100,7 @@ function Services() {
     }, []);
 
   return (
+    <>
     <Grid container spacing={3}>
       {services.map((service) => (
         <Grid item xs={12} sm={6} md={4} key={service._id}>
@@ -115,13 +132,22 @@ function Services() {
           </Card>
         </Grid>
       ))}
-          <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+          {isReviewOpen &&
+           <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
               <StyledDialogTitle id="form-dialog-title">Write a Review</StyledDialogTitle>
               <DialogContent>
-                  <Review serviceId={selectedServiceId} userId={userId} />
+                   <Review serviceId={selectedServiceId} userId={userId} closeReview={() => setIsReviewOpen(false)} setSnackbarOpen={setSnackbarOpen} setSnackbarMessage={setSnackbarMessage} />
               </DialogContent>
           </Dialog>
+          }
     </Grid>
+    <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <div><Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+        {snackbarMessage}
+      </Alert>
+      </div>
+    </Snackbar>
+    </>
   );
 }
 
