@@ -49,6 +49,7 @@ router.get('/review/:id', reviewController.getReviewById);
 router.post('/review', reviewController.createReview);
 router.put('/review/:id', reviewController.updateReview);
 router.delete('/review/:id', reviewController.deleteReview);
+router.put('/review/:id/status', reviewController.updateReviewStatus);
 
 // Application routes
 router.post('/application', upload.single('cv'), applicationController.createApplication);

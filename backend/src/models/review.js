@@ -21,7 +21,8 @@ const ReviewSchema = new mongoose.Schema({
       type: Number,
       min: 1,
       max: 5
-    }
+    },
+    status: { type: String, enum: ['pending', 'published', 'rejected'], default: 'pending' }, // New status field
   });
 
 module.exports = mongoose.model('Review', ReviewSchema);

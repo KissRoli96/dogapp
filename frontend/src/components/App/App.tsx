@@ -34,6 +34,7 @@ const ApplicationManagement = React.lazy(() => import('../ApplicationManagement/
 const DogManagement = React.lazy(() => import('../DogManagment/DogManagment'));
 const DogForm = React.lazy(() => import('../DogForm/DogForm'));
 const Appointment = React.lazy(() => import('../Appointment/Appointment'));
+const ReviewManagment = React.lazy(() => import('../ReviewManagment/ReviewManagment'));
 
 function App() {
   const  userId  = '663219e5d704b104f3e11f7b';
@@ -60,6 +61,7 @@ function App() {
             <Route path="/dog" element={<DogForm userId={userId} />} />
             <Route path="/services" element={<Services />} />
             <Route path="/applications" element={<ApplicationManagement />} />
+            <Route path="reviews" element={<ReviewManagment />} />
             <Route path="/servicestocustomers" element={<ServicesToCustomers />} />
             <Route path='/bookappointment' element={<Appointment />} />
             <Route path="/" element={<HomePage />} />

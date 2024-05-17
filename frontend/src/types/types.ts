@@ -18,13 +18,23 @@ export interface User {
   };
   __v: number;
 }
+
+
+export enum ReviewStatus {
+  Pending = 'pending',
+  Published = 'published',
+  Reject = 'rejected'
+}
+  
   
   export interface Review {
+    _id: string;
     user: string; // ObjectId
     service: string; // ObjectId
     content: string;
     date: Date;
     rating: number;
+    status: ReviewStatus;
   }
   
   export interface Dog {

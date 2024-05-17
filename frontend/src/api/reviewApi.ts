@@ -53,3 +53,13 @@ export const getReviewsByUserId = async (userId: string): Promise<Review[]> => {
     throw new Error(`Failed to get reviews by user ID ${userId}: ${(error as Error).message}`);
   }
 }
+
+export const updateReviewStatus = async (id: string, status: string): Promise<Review> => {
+  try {
+    const response = await api.put<Review>(`/review/${id}/status`, { status });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+

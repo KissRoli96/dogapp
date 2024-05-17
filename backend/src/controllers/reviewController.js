@@ -7,7 +7,8 @@ const reviewValidationSchema = Joi.object({
   service: Joi.objectId().required(),
   content: Joi.string().min(1).required(),
   date: Joi.date().default(Date.now),
-  rating: Joi.number().min(1).max(5).required()
+  rating: Joi.number().min(1).max(5).required(),
+  status: Joi.string().valid('pending', 'published', 'reject').default('pending').required()
 });
 
 // Create a review
@@ -72,6 +73,22 @@ exports.createReview = async (req, res) => {
     try {
       await Review.findByIdAndDelete(req.params.id);
       res.json({ message: 'Review deleted' });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
+
+  // Update the status of a review
+  exports.updateReviewStatus = async (req, res) => {
+    const status = req.body.status;
+    if (!['pending', 'rejected', 'published'].includes(status)) {
+      return res.status(400).send('Invalid status');
+    }
+
+    try {
+      const updatedReview = await Review.findByIdAndUpdate(req.params.id, { status }, { new: true });
+      res.json(updatedReview);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
