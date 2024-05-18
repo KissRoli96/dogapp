@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { getReviews, updateReviewStatus } from '../../api/reviewApi';
+import { getReviews, updateReviewStatus, getReview } from '../../api/reviewApi';
+import { getUser } from '../../api/userApi';
+import { getService } from '../../api/serviceApi';
 import { Review, User, Service, ReviewStatus } from '../../types/types';
 import { makeStyles } from '@mui/styles';
 import IconButton from '@mui/material/IconButton';
@@ -60,19 +62,52 @@ const useStyles = makeStyles({
     const classes = useStyles();
     const [selectedReview, setSelectedReview] = useState<Review | null>(null);
     
-
     useEffect(() => {
         const fetchReviews = async () => {
             const data = await getReviews();
-            const formattedData = data.map((review: Review) => ({
-                ...review,
-                id: review._id,
-                date: new Date(review.date),
-        }));
-        setReviews(formattedData);
-    };
-    fetchReviews();
+            const formattedDataPromises = data.map(async (review: Review) => {
+                let user;
+                let service = { name: 'Unknown' }; // default service
+    
+                try {
+                    if (typeof review.user === 'string') {
+                        user = await getUser(review.user);
+                    } else {
+                        user = review.user;
+                    }
+    
+                    if (typeof review.service === 'string') {
+                        service = await getService(review.service);
+                    } else {
+                        service = review.service;
+                    }
+                } catch (error) {
+                    console.error(`Error fetching user or service: ${error}`);
+                }
+    
+                return {
+                    ...review,
+                    id: review._id,
+                    date: new Date(review.date),
+                    user: user?.username, 
+                    service: service?.name,
+                };
+            });
+    
+            const formattedData = await Promise.all(formattedDataPromises);
+            setReviews(formattedData);
+        };
+    
+        fetchReviews();
     }, []);
+
+    useEffect(() => {
+            if (selectedReview) {
+                getReview(selectedReview._id).then((review) => {
+                    setSelectedReview(review);
+                });
+            }
+        }, [selectedReview]);
 
     const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
         if (reason === 'clickaway') {
@@ -83,7 +118,24 @@ const useStyles = makeStyles({
     }
 
     const handleOpen = (review: Review) => {
-        setSelectedReview(review);
+        let user, service;
+    
+        if (typeof review.user === 'string') {
+            user =  getUser(review.user);
+        } else {
+            user = review.user;
+        }
+    
+        if (typeof review.service === 'string') {
+            service =  getService(review.service);
+        } else {
+            service = review.service;
+        }
+    
+        setSelectedReview({
+            ...review,
+        });
+
         setOpen(true);
     };
 
@@ -104,7 +156,6 @@ const useStyles = makeStyles({
         await updateReviewStatus(id, status);
         setReviews(reviews.map(app => app._id === id ? { ...app, status } : app));
     };
-
 
 const columns: GridColDef[] = [
     { field: '_id', headerName: 'ID', width: 90 },
@@ -130,7 +181,9 @@ const columns: GridColDef[] = [
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="View">
-                    <IconButton>
+                    <IconButton onClick={() => {
+                        console.log(params.row);
+                        handleOpen(params.row)}} color="default">
                         <VisibilityIcon />
                     </IconButton>
                 </Tooltip>
@@ -179,6 +232,30 @@ return (
          <Button component={RouterLink} to="/dashboard" variant="contained" color="primary" style={{ marginBottom: '20px' }}>
                 Back to Dashboard
             </Button>
+        {open && (
+            <Card className={classes.card}>
+                <CardContent>
+                    <Typography variant="h5" component="h2">
+                    <strong>Username: </strong> {typeof selectedReview?.user === 'object'  ? selectedReview?.user.username : selectedReview?.user}
+                    </Typography>
+                    <Typography color="textSecondary">
+                    <strong>Service: </strong> {typeof selectedReview?.service === 'object' ? selectedReview?.service.name : selectedReview?.service}
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                    <strong>Content: </strong>{selectedReview?.content}
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                    <strong>Rating: </strong>{selectedReview?.rating}
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                    <strong>Date: </strong>{selectedReview && new Date(selectedReview.date).toLocaleDateString()}
+                    </Typography>
+                    <Button variant='contained' color='secondary' autoFocus onClick={handleClose} className={classes.closeButton}>
+              Close
+            </Button>
+                </CardContent>
+            </Card>
+        )}
         </div>
     );
 };

@@ -1,4 +1,5 @@
 const Service = require('../models/service');
+const mongoose = require('mongoose');
 const Joi = require('joi');
 
 const serviceValidationSchema = Joi.object({
@@ -40,7 +41,12 @@ exports.createService = async (req, res) => {
   // Get a service by ID
   exports.getServiceById = async (req, res) => {
     try {
-      const service = await Service.findById(req.params.id);
+      let service;
+      if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+        service = await Service.findById(req.params.id);
+      } else {
+        service = await Service.findOne({ name: req.params.id });
+      }
       if (!service) {
         return res.status(404).json({ error: 'Service not found' });
       }

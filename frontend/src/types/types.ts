@@ -29,8 +29,8 @@ export enum ReviewStatus {
   
   export interface Review {
     _id: string;
-    user: string; // ObjectId
-    service: string; // ObjectId
+    user: string | User; // ObjectId
+    service: string | Service; // ObjectId
     content: string;
     date: Date;
     rating: number;

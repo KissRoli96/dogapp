@@ -4,6 +4,7 @@ import Rating from '@material-ui/lab/Rating';
 import { createReview } from '../../api/reviewApi';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import {ReviewStatus} from '../../types/types';
 
 interface ReviewProps {
   serviceId: string;
@@ -19,6 +20,7 @@ interface Review {
   content: string;
   date: Date;
   rating: number;
+  status: ReviewStatus;
 }
 
 function Alert(props: AlertProps) {
@@ -65,6 +67,7 @@ function Review({ serviceId, userId, closeReview, setSnackbarOpen, setSnackbarMe
       content: content,
       date: new Date(),
       rating: rating ? rating : 0,
+      status: ReviewStatus.Pending
     };
 
     try {

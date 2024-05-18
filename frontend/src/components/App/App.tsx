@@ -1,24 +1,12 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
-// import HomePage from '../HomePage/HomePage';
-// import NavigationMenu from '../Navbar/Navbar';
 import { Helmet } from 'react-helmet';
-// import Dashboard from '../Dashboard/Dashboard';
 import { BrowserRouter as Router, Route,  Routes } from 'react-router-dom';
-// import DogcosmeticsTraining from '../DogcosmeticsTraining/DogcosmeticsTraining';
-// import Customers from '../Customers/Customers';
-// import ResponsiveAppBar from '../ResponsiveAppBar/ResponsiveAppBar';
-// import Profil from '../Profil/Profil';
-// import Services from '../Services/Services';
-// import ServicesToCustomers from '../ServicesToCustomers/ServicesToCustomers';
-// import ApplicationManagement from '../ApplicationManagement/ApplicationManagement';
-// import DogManagement from '../DogManagment/DogManagment';
-// import DogForm from '../DogForm/DogForm';
-// import Appointment from '../Appointment/Appointment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import UserContext from '../Contexts/UserContext';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Lazy load the components
 const HomePage = React.lazy(() => import('../HomePage/HomePage'));

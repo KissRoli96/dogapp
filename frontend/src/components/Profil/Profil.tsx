@@ -62,9 +62,11 @@ export const Profile: React.FC = () => {
           setReviews(reviewsData);
           return Promise.all(
             reviewsData.map((review) =>
-              getService(review.service).then((service: Service) => [review.service, service.name] as [string, string])
+                typeof review.service === 'string'
+                    ? getService(review.service).then((service: Service) => [review.service, service.name] as [string, string])
+                    : Promise.resolve([review.service._id, review.service.name] as [string, string])
             )
-          ) as Promise<[string, string][]>;
+        ) as Promise<[string, string][]>;
         })
         .then((servicesData: [string, string][]) =>
           setServiceNames(Object.fromEntries(servicesData))
@@ -248,7 +250,7 @@ export const Profile: React.FC = () => {
               Review {index + 1}:
             </Typography>
             <Typography variant="h4" gutterBottom>
-            Service: {serviceNames[review.service]}
+            Service: {serviceNames[typeof review.service === 'string' ? review.service : review.service._id]}
               </Typography>
             <Typography variant="body2" gutterBottom>
               Date: {new Date(review.date).toDateString()}

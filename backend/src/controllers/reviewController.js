@@ -21,7 +21,8 @@ exports.createReview = async (req, res) => {
       service: req.body.service,
       content: req.body.content,
       date: req.body.date,
-      rating: req.body.rating
+      rating: req.body.rating,
+      status: req.body.status || 'pending'
     });
   
     try {
