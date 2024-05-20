@@ -121,8 +121,8 @@ function ServicesToCustomers() {
         setNewService({
             name: service.name,
             description: service.description,
-            price: service.price.toString(), // Convert price to string
-            duration: service.duration.toString(), // Convert duration to string
+            price: service.price ? service.price.toString() : '0', // Convert price to string
+            duration: service.duration ? service.duration.toString() : '0', // Convert duration to string
         });
         setDialogMode('edit'); // Set dialog mode to 'edit'
         setOpen(true);
@@ -173,6 +173,7 @@ function ServicesToCustomers() {
         name: service.name,
         description: service.description,
         price: service.price,
+        duration: service.duration
     }));
 
     return (

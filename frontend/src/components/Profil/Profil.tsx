@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import { Avatar, Typography, Grid, Paper, makeStyles, Button, CardMedia } from '@material-ui/core';
+import { Avatar, Typography, Grid, Paper, makeStyles, Button, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import useFetchUserById from '../../api/useFetchUserById';
 import { Dog, User, Appointment, AppointmentStatus, Service, Review } from '../../types/types';
@@ -10,6 +10,7 @@ import { getReviews,getReviewsByUserId } from '../../api/reviewApi';
 import useFetchAppointmentsByUserId from '../../api/useFetchAppointmentsByUserId';
 import useFetchServicesByUserId from '../../api/useFetchServicesByUserId';
 import useFetchReviewByUserId from '../../api/useFetchReviewByUserId';
+import {rescheduleAppointment} from '../../api/appointmentApi';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,7 +41,11 @@ export const Profile: React.FC = () => {
   const { data: dogs, error: dogsError } = useFetchDogsByUserId(id);
   const { data: appointments, error: appointmentsError } = useFetchAppointmentsByUserId(id);
   const { data: services, error: servicesError } = useFetchServicesByUserId(id);
-
+  const [open, setOpen] = useState(false);
+  const [date, setDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');;
+  
 
   useEffect(() => {
     if (user && dogs) {
@@ -106,10 +111,36 @@ export const Profile: React.FC = () => {
   const lastDogs = dogs.slice(-2);
   const lastAppointments = appointments.slice(-2);
 
-
-  const handleEdit = () => {
-    // Handle edit action
+  const handleOpen = () => {
+    setOpen(true);
   };
+  
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
+  const handleEdit = async () => {
+    handleClose();
+  };
+  // const handleEdit = async (appointmentId: string) => {
+  //   try {
+  //     const response = await rescheduleAppointment(appointmentId, { date, startTime, endTime });
+  
+  //   //   // Update the appointments state
+  //   // setAppointments((prevAppointments: Appointment[])  => {
+  //   //   return prevAppointments.map((appointment: Appointment) => {
+  //   //     if (appointment.id === appointmentId) {
+  //   //       // This is the appointment that was rescheduled, update it with the new data
+  //   //       return response;
+  //   //     } else {
+  //   //       return appointment;
+  //   //   });
+  //   // });
+  //     handleClose();
+  //   } catch (error) {
+  //     console.error('Failed to reschedule appointment:', error);
+  //   }
+  // };
 
   const handleDelete = () => {
     // Handle delete action
@@ -228,9 +259,12 @@ export const Profile: React.FC = () => {
       </Grid>
     </Grid>
     <Grid item>
-              <Button variant="contained" color="primary" className={classes.button} onClick={handleEdit}>
-                Reschedule Appointment
-              </Button>
+    {/* <Button variant="contained" color="primary" className={classes.button} onClick={handleOpen(appointment._id)}>
+  Reschedule Appointment
+</Button> */}
+<Button variant="contained" color="primary" className={classes.button} onClick={handleEdit} >
+  Reschedule Appointment
+</Button>
               <Button variant="contained" color="secondary" className={classes.button} onClick={handleDelete}>
               Cancel Appointment
               </Button>
@@ -275,6 +309,33 @@ export const Profile: React.FC = () => {
             </Grid>
       </Paper>
     ))}
+     <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Reschedule Appointment</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Date"
+          type="date"
+          value={date}
+          onChange={e => setDate(e.target.value)}
+        />
+        <TextField
+          label="Start Time"
+          type="time"
+          value={startTime}
+          onChange={e => setStartTime(e.target.value)}
+        />
+        <TextField
+          label="End Time"
+          type="time"
+          value={endTime}
+          onChange={e => setEndTime(e.target.value)}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleEdit}>Reschedule</Button>
+      </DialogActions>
+    </Dialog>
     </>
   );
 };

@@ -20,6 +20,7 @@ router.get('/appointment/:id', appointmentController.getAppointmentById);
 router.post('/appointment', appointmentController.createAppointment);
 router.post('/appointment/:id/cancel', appointmentController.cancelAppointment);
 router.post('/appointment/:id/reschedule', appointmentController.rescheduleAppointment);
+router.put('/appointment/:id/status', appointmentController.updateAppointmentStatus);
 
 //Felhaszálóval kapcsolatos Útvonalak
 router.get('/users', userController.getAllUsers);

@@ -182,7 +182,6 @@ const columns: GridColDef[] = [
                 </Tooltip>
                 <Tooltip title="View">
                     <IconButton onClick={() => {
-                        console.log(params.row);
                         handleOpen(params.row)}} color="default">
                         <VisibilityIcon />
                     </IconButton>

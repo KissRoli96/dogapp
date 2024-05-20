@@ -98,12 +98,10 @@ exports.getDogById = async (req, res) => {
     if (!dog) {
       return res.status(404).json({ error: 'Dog not found' });
     }
-    const userId = '663219e5d704b104f3e11f7b';
-    // Assuming req.user is the currently authenticated user
-    // (req.user._id.toString()
-    if (userId !== dog.owner._id.toString()) {
-      return res.status(403).json({ error: 'This dog does not belong to the current user' });
-    }
+      // let userId = '664255f17256867d80d88981';
+    // if (req.params.id !== dog.owner._id.toString()) {
+    //   return res.status(403).json({ error: 'This dog does not belong to the current user' });
+    // }
 
     res.json(dog);
   } catch (err) {

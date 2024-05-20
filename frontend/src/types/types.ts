@@ -49,14 +49,15 @@ export enum ReviewStatus {
   }
   
   export interface Appointment {
+    _id?: string;
     startTime: string;
     endTime: string;
     date: string;
     status: AppointmentStatus;
     notes: string;
-    service: string; // ObjectId
-    dog: string; // ObjectId
-    user: string; // ObjectId
+    service: string | Service["name"]; // ObjectId
+    dog: string | Dog["name"]; // ObjectId
+    user: string | User["username"]; // ObjectId
   }
 
   export enum Status {

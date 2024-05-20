@@ -65,3 +65,12 @@ export const getAppointmentsByUserId = async (userId: string): Promise<Appointme
         throw new Error(`Failed to get appointments for user with id ${userId}: ${(error as Error).message}`);
     }
 };
+
+export const updateAppointmentStatus = async (id:string, status: string): Promise<Appointment> => {
+    try {
+        const response = await api.put<Appointment>(`/appointment/${id}/status`, { status });
+        return response.data;
+    }  catch (error) {
+        throw error;
+    }
+}

@@ -23,11 +23,11 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton component={Link} to="/appointments">
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="Orders" />
+      <ListItemText primary="Appointments" />
     </ListItemButton>
     <ListItemButton component={Link} to="/customers">
       <ListItemIcon>
