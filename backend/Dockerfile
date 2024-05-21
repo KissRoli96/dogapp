@@ -1,4 +1,4 @@
-# Használjuk a hivatalos Node.js alap imázst
+# Használjuk a hivatalos Node.js alap imaget
 FROM node:latest
 
 # Állítsuk be a munkakönyvtárat a konténerben
