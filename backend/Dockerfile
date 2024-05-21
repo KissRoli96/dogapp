@@ -10,6 +10,9 @@ COPY package*.json ./
 # Telepítsük a függőségeket
 RUN npm install
 
+# dotenv fájl másolása 
+COPY .env ./
+
 # Másoljuk az alkalmazás forráskódját a konténerbe
 COPY . .
 

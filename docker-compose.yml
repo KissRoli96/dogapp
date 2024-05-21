@@ -1,13 +1,29 @@
 version: '3'
 services:
-  app:
+  frontend:
     build:
-      context: .
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
     depends_on:
-      - keycloak
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/dogcosmetics
+  mongodb:
+    image: mongo
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - '27017:27017'
   keycloak:
     image: jboss/keycloak
     environment:
@@ -15,3 +31,5 @@ services:
       KEYCLOAK_PASSWORD: password
     ports:
       - '8080:8080'
+volumes:
+  mongodb_data:
