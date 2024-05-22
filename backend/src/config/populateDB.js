@@ -46,7 +46,6 @@ const services = Array.from({ length: 5 }).map(() => {
     name: faker.commerce.productName(),
     description: faker.lorem.sentence(),
     price: faker.commerce.price(),
-    // Add other fields as necessary
   });
 
   return service.save();
