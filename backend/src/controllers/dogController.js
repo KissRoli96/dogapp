@@ -64,7 +64,7 @@ exports.createDog = async (req, res) => {
     breed: req.body.breed,
     age: req.body.age,
     weight: req.body.weight,
-    owner: '663219e5d704b104f3e11f7b', // Get the user's id from req.user._id
+    owner: req.user._id, // Get the user's id from req.user._id
     picture: req.file.path,
   });
 

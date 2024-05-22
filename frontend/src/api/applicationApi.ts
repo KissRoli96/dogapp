@@ -69,7 +69,7 @@ export const updateApplicationStatus = async (id: string, status: Status): Promi
 export const getApplicationCv = async (id: string): Promise<Blob> => {
   try {
     const response = await api.get<Blob>(`/application/${id}/cv`, {
-      responseType: 'blob', // Important: set the responseType to 'blob'
+      responseType: 'blob',
     });
     return response.data;
   } catch (error) {

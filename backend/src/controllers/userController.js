@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const mongoose = require('mongoose');
 const Joi = require('joi');
+// const keycloak = require('../config/keycloakclient')
 
 const userValidationSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(30).required(),
@@ -67,7 +68,57 @@ exports.createUser = async (req, res) => {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Server error, An error occurred while creating user' });
   }
-}
+};
+
+
+// Create a new user with keycloak
+exports.createUser = async (req, res) => {
+  const { error } = userValidationSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+
+  try {
+
+    // Create user in Keycloak
+    await kcAdminClient.users.create({
+      username: req.body.username,
+      email: req.body.email,
+      enabled: true,
+      firstName: req.body.profile.firstName,
+      lastName: req.body.profile.lastName,
+      attributes: {
+        age: req.body.profile.age.toString(),
+        phoneNumber: req.body.profile.phoneNumber,
+        city: req.body.profile.address.city,
+        country: req.body.profile.address.country
+      }
+    });
+
+    // Get the newly created user's ID
+    const newUserInKeycloak = await kcAdminClient.users.find({username: req.body.username});
+    const userId = newUserInKeycloak[0].id;
+
+    // Set the user's password
+    await kcAdminClient.users.resetPassword({
+      id: userId,
+      credential: {
+        temporary: false,
+        type: 'password',
+        value: req.body.password
+      }
+    });
+
+    // Create user in MongoDB
+    const newUserInMongoDB = new User(req.body);
+    await newUserInMongoDB.save();
+
+    res.status(201).json(newUserInMongoDB);
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Server error, An error occurred while creating user' });
+  }
+};
 
 // Update a user
 exports.updateUser = async (req, res) => {

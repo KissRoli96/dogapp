@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getUser } from './userApi';
-import { User } from '../types/types'; // Replace with actual path
+import { User } from '../types/types'; 
 
 const useFetchUserById = (id: string | undefined) => {
     const [data, setData] = useState<User | null>(null);

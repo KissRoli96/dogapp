@@ -36,7 +36,7 @@ const useStyles = makeStyles({
     gap: '20px',
   },
   closeButton: {
-    marginTop: '20px', // Add some margin to the top of the button
+    marginTop: '20px',
   },
   root: {
     '& .MuiDataGrid-root .MuiDataGrid-footer': {
@@ -112,7 +112,7 @@ const ApplicationManagement = () => {
   const handleAccept = async (id: string) => {
     try {
       await updateApplicationStatus(id, Status.Accepted);
-      // Refetch applications or update state here
+
     } catch (error) {
       console.error('Error updating application: ', error);
     }
@@ -121,7 +121,6 @@ const ApplicationManagement = () => {
   const handleReject = async (id: string) => {
     try {
       await updateApplicationStatus(id, Status.Rejected);
-      // Refetch applications or update state here
     } catch (error) {
       console.error('Error updating application: ', error);
     }

@@ -52,11 +52,11 @@ app.use(express.static('public'));
 //    - Importálni az API útválasztókat (routes/api.js)
 const apiRoutes = require('./routes/api');
 //    - Az '/api' prefix alatt lesznek kezelve az  API hívások
-app.use('/api', keycloak.protect((token, request) => {
-  return token.hasRole('admin') || token.hasRole('dogbeautician') || token.hasRole('guest') || token.hasRole('registereduser');
-}), apiRoutes); // Protect API routes with Keycloak
+// app.use('/api', keycloak.protect((token, request) => {
+//   return token.hasRole('admin') || token.hasRole('dogbeautician') || token.hasRole('guest') || token.hasRole('registereduser');
+// }), apiRoutes); // Protect API routes with Keycloak
 
-
+app.use('/api', apiRoutes);
 // Port beállítása és szerver indítása
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

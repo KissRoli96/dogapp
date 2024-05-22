@@ -13,7 +13,7 @@ import { makeStyles } from '@mui/styles';
 import { getDogs, getDog } from '../../api/dogApi';
 import DogForm from '../DogForm/DogForm';
 import { useNavigate } from 'react-router-dom';
-import { createAppointment } from '../../api/appointmentApi'; // adjust the path as necessary
+import { createAppointment } from '../../api/appointmentApi';
 import { Alert } from '@material-ui/lab';
 
 const useStyles = makeStyles({
@@ -50,7 +50,7 @@ export default function Appointment() {
   const [showDogForm, setShowDogForm] = useState(false);
   const [notes, setNotes] = useState('');
   const navigate = useNavigate();
-  const userId = '663219e5d704b104f3e11f7b'; // replace with actual userId
+  const userId = '663219e5d704b104f3e11f7b'; 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [response, setResponse] = useState<Appointment | null>(null);
@@ -130,15 +130,15 @@ export default function Appointment() {
     if (date && selectedService) {
       setDate(date);
       setEndTime(date.add(selectedService.duration, 'minute'));
-     // Format the selected date and time as a string
+
      const startTime = date;
-     setStartTime(startTime); // replace setStartTime with your state setter or form updater
+     setStartTime(startTime); 
     }
 
   };
 
   const handleNotesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Update the notes state when the TextField value changes
+    
     setNotes(event.target.value);
   };
 
@@ -159,7 +159,7 @@ export default function Appointment() {
       setOpenSnackbar(true);
       setIsSubmitted(true);
 
-    // Check if the request was successful
+
   if ('error' in response) {
     console.error(`Failed to book appointment: ${response.error}`);
   } else {

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { getReviews, updateReviewStatus, getReview } from '../../api/reviewApi';
 import { getUser } from '../../api/userApi';
 import { getService } from '../../api/serviceApi';
 import { getAppointment, getAppointments, updateAppointmentStatus} from '../../api/appointmentApi';
@@ -16,11 +15,9 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom';
-import GetAppIcon from '@material-ui/icons/GetApp';
+
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { format } from 'path';
-import { ClassNames } from '@emotion/react';
 import { getDog, getDogs } from '../../api/dogApi';
 
 const useStyles = makeStyles({
